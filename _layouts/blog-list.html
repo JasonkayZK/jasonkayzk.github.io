@@ -1,0 +1,43 @@
+---
+layout: default
+---
+<div class="blog-container">
+  <div class="page-label">Blog</div>
+  <h1 class="page-title">{{ page.title | escape }}</h1>
+
+  {% assign all_tags = '' | split: '' %}
+  {% for post in site.posts %}
+    {% for t in post.tags %}
+      {% assign all_tags = all_tags | push: t %}
+    {% endfor %}
+  {% endfor %}
+  {% assign all_tags = all_tags | uniq | sort %}
+
+  {% if all_tags != empty %}
+  <div class="filter-bar">
+    <button class="filter-pill active" data-tag="all" aria-pressed="true">All</button>
+    {% for t in all_tags %}
+    <button class="filter-pill" data-tag="{{ t | escape }}" aria-pressed="false">{{ t | escape }}</button>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="timeline-list">
+    {% for post in site.posts %}
+    <div class="timeline-item blog-post-card" data-tags="{{ post.tags | join: ',' }}">
+      <span class="timeline-index">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+      <div class="timeline-meta">
+        <span>{{ post.date | date: '%b %-d, %Y' }}</span>
+        {% if post.categories %}<span>·</span><span>{{ post.categories | first | escape }}</span>{% endif %}
+        {% assign words = post.content | strip_html | number_of_words %}
+        {% assign minutes = words | divided_by: 200 | at_least: 1 %}
+        <span>·</span><span>{{ minutes }} min read</span>
+      </div>
+      <a href="{{ post.url | relative_url }}">
+        <h2 class="timeline-title {% if forloop.first %}timeline-title-large{% endif %}">{{ post.title | escape }}</h2>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<script src="{{ '/assets/js/blog-filter.js' | relative_url }}"></script>

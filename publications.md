@@ -17,9 +17,9 @@ permalink: /publications/
 
   {% if topics != empty %}
   <div class="filter-bar">
-    <button class="filter-pill active" data-tag="all">All</button>
+    <button class="filter-pill active" data-tag="all" aria-pressed="true">All</button>
     {% for t in topics %}
-    <button class="filter-pill" data-tag="{{ t }}">{{ t }}</button>
+    <button class="filter-pill" data-tag="{{ t }}" aria-pressed="false">{{ t }}</button>
     {% endfor %}
   </div>
   {% endif %}

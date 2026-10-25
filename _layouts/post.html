@@ -1,0 +1,34 @@
+---
+layout: default
+---
+<div class="post-container">
+  <article class="post-article">
+    <header class="post-header">
+      <div class="page-label">{{ page.categories | first | default: 'Writing' | escape }}</div>
+      <h1 class="post-title">{{ page.title | escape }}</h1>
+      <div class="post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time>
+        {% if page.categories %}
+        <span class="post-category-badge">{{ page.categories | first | escape }}</span>
+        {% endif %}
+        {% assign words = page.content | strip_html | number_of_words %}
+        {% assign minutes = words | divided_by: 200 | at_least: 1 %}
+        <span class="post-reading-time">{{ minutes }} min read</span>
+      </div>
+    </header>
+    <div class="post-content">
+      {{ content }}
+    </div>
+    <footer class="post-footer">
+      <a href="{{ '/blog/' | relative_url }}" class="back-to-blog">&larr; Back to Blog</a>
+      <div class="post-nav">
+        {% if page.previous %}
+        <a href="{{ page.previous.url | relative_url }}" class="post-nav-prev">&larr; {{ page.previous.title | escape }}</a>
+        {% endif %}
+        {% if page.next %}
+        <a href="{{ page.next.url | relative_url }}" class="post-nav-next">{{ page.next.title | escape }} &rarr;</a>
+        {% endif %}
+      </div>
+    </footer>
+  </article>
+</div>

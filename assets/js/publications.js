@@ -17,8 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
   pills.forEach(function (pill) {
     pill.addEventListener('click', function () {
       var tag = this.getAttribute('data-tag');
+
       pills.forEach(function (p) { p.classList.remove('active'); });
       this.classList.add('active');
+
+      pills.forEach(function (p) { p.setAttribute('aria-pressed', 'false'); });
+      this.setAttribute('aria-pressed', 'true');
+
       cards.forEach(function (card) {
         var cardTags = (card.getAttribute('data-tags') || '').split(',');
         if (tag === 'all' || cardTags.indexOf(tag) !== -1) {
@@ -27,9 +32,13 @@ document.addEventListener('DOMContentLoaded', function () {
           card.style.display = 'none';
         }
       });
+
       yearSections.forEach(function (section) {
-        var visibleCards = section.querySelectorAll('.pub-card:not([style*="display: none"])');
-        section.style.display = visibleCards.length > 0 ? '' : 'none';
+        var anyVisible = Array.prototype.some.call(
+          section.querySelectorAll('.pub-card'),
+          function (c) { return c.style.display !== 'none'; }
+        );
+        section.style.display = anyVisible ? '' : 'none';
       });
     });
   });
