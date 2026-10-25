@@ -1,12 +1,18 @@
 # Education history, shown on Home and CV. Newest first.
-# Fields: title, subtitle, org (optional), dates, logo (optional, 48x48 friendly)
-- title: Placeholder University
-  subtitle: Ph.D. in Computer Science (prospective)
-  org: Department of Computer Science
-  dates: 2027 – expected
-  logo: /img/logos/university_a.svg
+# Fields: 
+#   - title
+#   - subtitle
+#   - org (optional)
+#   - dates
+#   - logo (optional, 48x48 friendly)
 
-- title: Another University
-  subtitle: B.S. in Software Engineering
-  dates: 2016 – 2020
-  logo: /img/logos/university_b.svg
+- title: South China University of Technology
+  subtitle: Master in Electrical Engineering Theory and New Technology
+  org: Department of EE
+  dates: 2018 - 2021
+  logo: /img/logos/scut.jpeg
+
+- title: Henan Polytechnic University
+  subtitle: Electrical Engineering and Automation (Integrated Bachelor-Master Program)
+  dates: 2014 - 2018
+  logo: /img/logos/hpu.png

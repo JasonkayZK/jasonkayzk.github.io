@@ -9,44 +9,24 @@
 #   links    — optional list of {label, url} rendered as outline buttons
 #   abstract — optional string, shown behind the Abstract toggle
 
-- title: "Placeholder Paper Title: A Study of Something Interesting"
+
+- title: "Application of Improved LSTM Neural Network in Motor Fault Diagnosis"
+  year: 2021
   authors:
-    - Your Name
-    - Alice Cooperauthor
-  venue: "Preprint"
-  tags: [LLM, Reasoning]
-  pdf: https://arxiv.org
+    - K. Zhang
+    - G. Lin
+    - Q. Luo
+  venue: "Computer Measurement & Control"
+  award: 
+  tags: [LSTM, Deep Learning, Motor Fault Diagnosis]
+  pdf: http://60.29.199.67:18081/KCMS/detail/detail.aspx?filename=JZCK202104010&dbcode=CJFQ&dbname=CJFDLAST2021
   links:
-    - label: arXiv
-      url: https://arxiv.org
+    - label: CNKI
+      url: http://60.29.199.67:18081/KCMS/detail/detail.aspx?filename=JZCK202104010&dbcode=CJFQ&dbname=CJFDLAST2021
     - label: Code
-      url: https://github.com/JasonkayZK
+      url: https://github.com/JasonkayZK/predictor
   abstract: >
-    This is a placeholder abstract. Replace it with the real abstract of the
-    paper. It is hidden behind the Abstract toggle on the page, so it can be a
-    few sentences longer than the excerpt shown anywhere else.
-
-- title: "Another Placeholder Paper: Systems and Such"
-  authors:
-    - Your Name
-    - Bob Cooperator
-    - Carol Cooperator
-  venue: "International Conference on Placeholder Research (ICPR)"
-  year: 2025
-  award: Best Paper Award
-  tags: [Systems, LLM]
-  pdf: https://arxiv.org
-  abstract: >
-    Second placeholder abstract. This entry demonstrates a year-grouped
-    publication with an award badge.
-
-- title: "A Third Placeholder Paper"
-  authors:
-    - Devin Cooperauthor
-    - Your Name
-  venue: "Workshop on Placeholder Computing (WPC)"
-  year: 2024
-  tags: [Systems]
-  abstract: >
-    Third placeholder abstract. This entry demonstrates a publication where
-    the site owner is not the first author.
+    This paper proposes an improved LSTM-based method for asynchronous motor fault diagnosis using the RAdam optimizer.
+    It combines double-peak spectral interpolation and sliding window techniques for harmonic extraction and time-series prediction, 
+    enabling more accurate fault detection. 
+    Experimental results using real-world motor data demonstrate improved fault detection performance compared to traditional neural networks.

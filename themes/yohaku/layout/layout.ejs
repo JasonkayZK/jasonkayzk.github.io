@@ -37,5 +37,8 @@
     </main>
     <%- partial('partial/footer') %>
     <script src="<%- url_for('assets/js/theme.js') %>"></script>
+    <% if (page.layout === 'post' || (page.path || '').indexOf('blog/') === 0) { %>
+    <script src="<%- url_for('assets/js/lightbox.js') %>"></script>
+    <% } %>
   </body>
 </html>

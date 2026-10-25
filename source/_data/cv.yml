@@ -4,8 +4,21 @@
 # Education and experience rows live in education.yml / experience.yml.
 
 skills:
-  - "Placeholder skill group one: language, language, framework"
-  - "Placeholder skill group two: infrastructure, tooling"
+  - "Programming Languages: Python, Go, Java, JavaScript, TypeScript, C/C++"
+  - "Backend Development: REST APIs, Microservices, Distributed Systems"
+  - "Frontend Development: React, Vue.js, HTML, CSS"
+  - "AI & Machine Learning: PyTorch, Deep Learning, LSTM, CUDA, High-Performance Computing"
+  - "Infrastructure & DevOps: Linux, Docker, Kubernetes, Nginx, CI/CD, Git"
+  - "Databases & Middleware: MySQL, Redis, PostgreSQL"
+  - "Development Tools: Git, GitHub, VS Code, JetBrains IDEs"
 
 awards:
-  - "20XX — Placeholder award"
+  - "2019 — Second Place, Huawei Software Elite Challenge (Guangdong–Hong Kong–Macao Regional Competition)"
+  - "2019 — Outstanding Student Leader, School of Electric Power, South China University of Technology"
+  - "2017 — National First Prize, National College Students Mathematics Competition"
+  - "2017 — National First Prize, National English Competition for College Students"
+  - "2016 — University First-Class Scholarship, Henan Polytechnic University"
+  - "2015 — National Scholarship, China"
+  - "2015 — Outstanding Student Model, Henan Polytechnic University"
+  - "2015 — Champion, Top Ten Campus Singers Competition, School of Electrical Engineering"
+  - "2015 — Third Prize, University ACM Programming Competition"

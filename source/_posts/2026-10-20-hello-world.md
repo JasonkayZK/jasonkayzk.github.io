@@ -22,7 +22,3 @@ tags: [systems, rust]
 category: technical
 excerpt: "One or two sentences shown on the blog index."
 ```
-
-The `tags` drive the filter pills on the [Blog](/blog/) page, `category` is an
-optional badge on the post page, and `excerpt` is what the index card shows.
-Everything is optional except `title` and `date`.

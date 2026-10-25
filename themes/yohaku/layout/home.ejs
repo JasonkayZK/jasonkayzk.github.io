@@ -6,60 +6,63 @@
   var yearsActive = moment().format('YYYY') - Number(config.site_since);
   var recent = site.posts.sort('-date').toArray().slice(0, 5);
 %>
-<section class="hero">
-  <div class="hero-glow" aria-hidden="true"></div>
-  <img src="<%- url_for(config.avatar || '/img/photo.svg') %>" alt="<%= config.author %>" class="hero-avatar">
-  <h1 class="hero-greeting">
-    <span class="hero-greeting-intro">Hi, I'm </span><span class="hero-name"><%= config.author %></span><span class="wave" aria-hidden="true"> 👋</span>
-  </h1>
-  <p class="hero-tagline"><%= config.hero_tagline %></p>
-  <div class="hero-keywords">
-    <% (config.hero_keywords || []).forEach(function (kw) { %>
-    <span class="hero-keyword"><%= kw %></span>
-    <% }); %>
-  </div>
-  <div class="hero-stats">
-    <span><strong><%= site.posts.length %></strong> posts</span>
-    <span><strong><%= Math.floor(totalWords / 1000) %>k</strong> words</span>
-    <span><strong><%= yearsActive %></strong> years writing</span>
-  </div>
-  <%- partial('partial/social-links') %>
-</section>
+<div class="home-container">
+  <aside class="home-sidebar">
+    <img src="<%- url_for(config.avatar || '/img/photo.svg') %>" alt="<%= config.author %>" class="avatar">
+    <h1 class="home-name"><%= config.author %></h1>
+    <p class="home-affiliation"><%= config.affiliation %></p>
+    <%- partial('partial/social-links') %>
+  </aside>
 
-<div class="home-body">
-  <%- page.content %>
-
-  <% if (site.posts.length) { %>
-  <section class="home-section">
-    <h2 class="home-section-title">Recent Writing</h2>
-    <div class="timeline-list">
-      <% recent.forEach(function (post, i) { %>
-      <div class="timeline-item">
-        <span class="timeline-index"><%= String(i + 1).padStart(2, '0') %></span>
-        <div class="timeline-meta">
-          <span><%= date(post.date, 'MMM D, YYYY') %></span>
-          <% if (post.categories && post.categories.length) { %><span>·</span><span><%= post.categories.first().name %></span><% } %>
-        </div>
-        <a href="<%- url_for(post.path) %>">
-          <h3 class="timeline-title<%= i === 0 ? ' timeline-title-large' : '' %>"><%= post.title %></h3>
-        </a>
+  <div class="home-content">
+    <div class="home-intro">
+      <p class="home-tagline"><%= config.hero_tagline %></p>
+      <div class="hero-keywords">
+        <% (config.hero_keywords || []).forEach(function (kw) { %>
+        <span class="hero-keyword"><%= kw %></span>
+        <% }); %>
       </div>
-      <% }); %>
+      <div class="hero-stats">
+        <span><strong><%= site.posts.length %></strong> posts</span>
+        <span><strong><%= Math.floor(totalWords / 1000) %>k</strong> words</span>
+        <span><strong><%= yearsActive %></strong> years writing</span>
+      </div>
     </div>
-  </section>
-  <% } %>
 
-  <% if (site.data.education && site.data.education.length) { %>
-  <section class="home-section">
-    <h2 class="home-section-title">Education</h2>
-    <%- partial('partial/experience-list', {items: site.data.education}) %>
-  </section>
-  <% } %>
+    <%- page.content %>
 
-  <% if (site.data.experience && site.data.experience.length) { %>
-  <section class="home-section">
-    <h2 class="home-section-title">Experience</h2>
-    <%- partial('partial/experience-list', {items: site.data.experience}) %>
-  </section>
-  <% } %>
+    <% if (site.posts.length) { %>
+    <section class="home-section">
+      <h2 class="home-section-title">Recent Writing</h2>
+      <div class="timeline-list">
+        <% recent.forEach(function (post, i) { %>
+        <div class="timeline-item">
+          <span class="timeline-index"><%= String(i + 1).padStart(2, '0') %></span>
+          <div class="timeline-meta">
+            <span><%= date(post.date, 'MMM D, YYYY') %></span>
+            <% if (post.categories && post.categories.length) { %><span>·</span><span><%= post.categories.first().name %></span><% } %>
+          </div>
+          <a href="<%- url_for(post.path) %>">
+            <h3 class="timeline-title<%= i === 0 ? ' timeline-title-large' : '' %>"><%= post.title %></h3>
+          </a>
+        </div>
+        <% }); %>
+      </div>
+    </section>
+    <% } %>
+
+    <% if (site.data.education && site.data.education.length) { %>
+    <section class="home-section">
+      <h2 class="home-section-title">Education</h2>
+      <%- partial('partial/experience-list', {items: site.data.education}) %>
+    </section>
+    <% } %>
+
+    <% if (site.data.experience && site.data.experience.length) { %>
+    <section class="home-section">
+      <h2 class="home-section-title">Experience</h2>
+      <%- partial('partial/experience-list', {items: site.data.experience}) %>
+    </section>
+    <% } %>
+  </div>
 </div>

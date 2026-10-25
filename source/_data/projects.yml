@@ -5,27 +5,40 @@
 #   repo        — optional URL to the source repository
 #   demo        — optional URL to a live demo
 
-- name: Placeholder Project Alpha
+- name: high-performance-computing-learn
   description: >
-    Replace this with a one-to-three sentence description of the project:
-    what problem it solves and what makes it interesting. Keep it short —
-    readers can follow the links for details.
-  tags: [Rust, CLI]
-  repo: https://github.com/JasonkayZK
-  demo:
+    A hands-on learning repository exploring the fundamentals of high-performance computing (HPC), 
+    from numerical analysis to parallel programming with CUDA, OpenMP, and MPI.
+    It brings together practical examples and experiments to help developers understand 
+    how to accelerate computations and make efficient use of modern hardware.
+  tags: [HPC, notes]
+  repo: https://github.com/JasonkayZK/high-performance-computing-learn
+  demo: 
 
-- name: Placeholder Project Beta
+- name: translatorx
   description: >
-    Second placeholder project. Demonstrates a card with a demo link and
-    without one, so you can see both states before filling in real projects.
-  tags: [LLM, Python]
-  repo: https://github.com/JasonkayZK
-  demo: https://example.com
+    an open-source desktop app that turns everyday translation into active language learning.
+    Instead of simply translating text, it helps users practice writing through interactive exercises, 
+    word-by-word feedback, AI-powered tutoring, 
+    and spaced repetition—all seamlessly integrated into their daily workflow.
+  tags: [language-learning, translator, Tauri]
+  repo: https://github.com/JasonkayZK/translatorx
+  demo: https://jasonkayzk.github.io/translatorx/
 
-- name: Placeholder Project Gamma
+- name: widgetx
   description: >
-    Third placeholder project. Every field except name is optional; this card
-    shows the layout with only tags and no links at all.
-  tags: [Distributed Systems, Go]
-  repo:
-  demo:
+    A lightweight desktop application built with Tauri that lets users embed customizable web widgets directly on their desktop.
+    It turns websites and web-based tools into convenient, always-accessible desktop widgets, 
+    combining the flexibility of web technologies with the efficiency of a native application.
+  tags: [desktop-tool, utility, Tauri]
+  repo: https://github.com/JasonkayZK/widgetx
+  demo: 
+
+- name: mock-protobuf.js
+  description: >
+    A TypeScript-based CLI tool that automatically generates realistic mock JSON data and HTTP mock servers from Protocol Buffer definitions.
+    It simplifies API development and testing by eliminating manual mock data creation, 
+    with support for customizable responses, regex-based filtering, and Protobuf HTTP annotations.
+  tags: [CLI, mock-tool, ]
+  repo: https://github.com/JasonkayZK/mock-protobuf.js
+  demo: 

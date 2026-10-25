@@ -1,8 +1,7 @@
 # JasonkayZK.github.io
 
-English academic personal site (PhD-application oriented), built with
-Hexo 8 and a hand-written `yohaku` theme (visual language ported from
-innei.in). Served by GitHub Pages from the `gh-pages` branch, which is
+English academic personal site, built with
+Hexo 8 and a hand-written `yohaku` theme. Served by GitHub Pages from the `gh-pages` branch, which is
 built and pushed by GitHub Actions on every push to `save`. The old blog
 backup lives in `__bak/` and is ignored by the build. Chinese/Japanese
 archives live at `/cn/` and `/jp/` (separate repos), linked from the nav.

@@ -3,7 +3,6 @@
   <h1 class="page-title"><%= page.title %></h1>
 
   <p><a class="pub-link" href="<%- url_for('assets/cv.pdf') %>">Download CV (PDF)</a>
-  <em>(placeholder — drop your <code>cv.pdf</code> into <code>themes/yohaku/source/assets/</code>)</em></p>
 
   <h2>Education</h2>
   <%- partial('partial/experience-list', {items: site.data.education}) %>
@@ -12,16 +11,32 @@
   <%- partial('partial/experience-list', {items: site.data.experience}) %>
 
   <h2>Skills</h2>
-  <ul>
-    <% ((site.data.cv || {}).skills || []).forEach(function (s) { %>
-    <li><%= s %></li>
+  <div class="cv-skill-list">
+    <% ((site.data.cv || {}).skills || []).forEach(function (s) {
+         var sep = s.indexOf(':');
+         var label = sep > -1 ? s.slice(0, sep).trim() : '';
+         var body = sep > -1 ? s.slice(sep + 1).trim() : s;
+    %>
+    <div class="cv-skill-item">
+      <% if (label) { %>
+      <span class="cv-skill-label"><%= label %></span>
+      <% } %>
+      <span class="cv-skill-body"><%= body %></span>
+    </div>
     <% }); %>
-  </ul>
+  </div>
 
   <h2>Awards</h2>
-  <ul>
-    <% ((site.data.cv || {}).awards || []).forEach(function (s) { %>
-    <li><%= s %></li>
+  <div class="timeline-list cv-award-list">
+    <% ((site.data.cv || {}).awards || []).forEach(function (s, i) { %>
+    <div class="timeline-item">
+      <span class="timeline-index"><%= String(i + 1).padStart(2, '0') %></span>
+      <div class="timeline-meta">
+        <% var dash = s.indexOf('—'); var year = dash > -1 ? s.slice(0, dash).trim() : ''; %>
+        <% if (year) { %><span><%= year %></span><% } %>
+      </div>
+      <div class="timeline-title"><%= dash > -1 ? s.slice(dash + 1).trim() : s %></div>
+    </div>
     <% }); %>
-  </ul>
+  </div>
 </div>

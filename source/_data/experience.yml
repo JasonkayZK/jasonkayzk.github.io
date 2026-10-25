@@ -1,13 +1,13 @@
 # Work experience, shown on Home and CV. Newest first.
 # Same fields as education.yml
-- title: Placeholder Company A
-  subtitle: Senior Backend Engineer
-  org: Platform Engineering
-  dates: 2023 – present
-  logo: /img/logos/company_a.svg
+- title: PZXY
+  subtitle: Lecturer
+  org: School of Computer and Software Engineering
+  dates: 2024 – present
+  logo: /img/logos/pzxy.jpeg
 
-- title: Placeholder Company B
+- title: Tencent
   subtitle: Backend Engineer
-  org: Infrastructure
-  dates: 2020 – 2023
-  logo: /img/logos/company_b.svg
+  org: CSIG(Tencent Cloud)
+  dates: 2021 – 2023
+  logo: /img/logos/tencent.png
