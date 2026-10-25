@@ -11,15 +11,18 @@ hero_keywords: [LLM, Systems, RL]
 site_since: 2019
 avatar: "/img/photo.svg"
 
-# Social links shown on the home hero (leave a value empty to hide the icon)
+# Social links shown on the home hero (leave the value unset to hide the icon)
 github_username: "JasonkayZK"
 scholar_url: "https://scholar.google.com"
-twitter_username: ""
+twitter_username:
 
 # Blog
 permalink: /blog/:year/:month/:day/:title/
 
 # Build settings
+# Hand-written theme — no theme gem. Explicitly null so the github-pages gem
+# does not silently default to jekyll-theme-primer.
+theme: null
 markdown: kramdown
 plugins:
   - jekyll-feed
