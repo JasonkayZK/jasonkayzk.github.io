@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jasonkay&#39;s blog</title>
+    
+    <meta name="description" content="Personal website of Jasonkay — software engineer and aspiring researcher.">
+    <meta name="author" content="Jasonkay">
+    <meta name="theme-color" content="#faf7f0" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
+    <link rel="canonical" href="https://jasonkayzk.github.io/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <script>
+      // Prevent flash of wrong theme: applied before first paint.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t !== 'light' && t !== 'dark') t = 'auto';
+          if (t === 'auto') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { /* localStorage unavailable: stay light */ }
+      })();
+    </script>
+  <link rel="alternate" href="/feed.xml" title="Jasonkay's blog" type="application/atom+xml">
+</head>
+  <body>
+    
+<nav class="site-nav">
+  <div class="nav-container">
+    <a class="nav-title" href="/">Jasonkay&#39;s blog</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+    <label for="nav-toggle" class="nav-hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="/" class="active">Home</a></li>
+      <li><a href="/publications/" >Publications</a></li>
+      <li><a href="/blog/" >Blog</a></li>
+      <li><a href="/projects/" >Projects</a></li>
+      <li><a href="/cv/" >CV</a></li>
+      <li class="nav-external">
+        <a href="https://jasonkayzk.github.io/cn/" target="_blank" rel="noopener">CN-Site</a>
+        <a href="https://jasonkayzk.github.io/jp/" target="_blank" rel="noopener">JP-Site</a>
+      </li>
+      <li class="nav-theme">
+        <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+    <main class="page-content">
+      
+<div class="home-container">
+  <aside class="home-sidebar">
+    <img src="/img/photo.png" alt="Jasonkay" class="avatar">
+    <h1 class="home-name">Jasonkay</h1>
+    <p class="home-affiliation">Aspiring Ph.D. Student</p>
+    <div class="social-links">
+  
+  <a href="https://github.com/JasonkayZK" title="GitHub" target="_blank" rel="noopener">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+  </a>
+  
+  
+  <a href="https://scholar.google.com/citations?user=7vR3kJIAAAAJ" title="Google Scholar" target="_blank" rel="noopener">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
+  </a>
+  
+  
+  <a href="https://twitter.com/Jasonkay_ZK" title="Twitter / X" target="_blank" rel="noopener">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+  </a>
+  
+  
+  <a href="mailto:jasonkayzk@gmail.com" title="Email">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+  </a>
+  
+  <a href="https://jasonkayzk.github.io/feed.xml" title="RSS">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6.503 20.752A2.25 2.25 0 016.5 16.3a2.25 2.25 0 01.003 4.452zM2.004 11.21v3.5a8.037 8.037 0 017.288 7.285h3.501c-.25-5.955-4.834-10.538-10.789-10.785zM2.004 2v3.5c10.47 0 18.996 8.522 18.996 19h3.5C24.5 13.825 13.865 2 2.004 2z"/></svg>
+  </a>
+</div>
+
+  </aside>
+
+  <div class="home-content">
+    <div class="home-intro">
+      <p class="home-tagline">I turn curiosity into systems</p>
+      <div class="hero-keywords">
+        
+        <span class="hero-keyword">LLM</span>
+        
+        <span class="hero-keyword">Systems</span>
+        
+        <span class="hero-keyword">RL</span>
+        
+      </div>
+      <div class="hero-stats">
+        <span><strong>1</strong> posts</span>
+        <span><strong>0k</strong> words</span>
+        <span><strong>0</strong> years writing</span>
+      </div>
+    </div>
+
+    <h2 id="research-interests">Research Interests</h2><p>My journey into computing began with a background in <strong>Electrical Engineering</strong>, followed by several years of working as a software engineer. Over time, I became increasingly curious about what happens beneath the abstractions we use every day—how computers actually execute complex computations, and how we can make them faster and more efficient. That curiosity eventually led me toward <strong>AI Systems, Machine Learning Infrastructure, and High-Performance Computing</strong>.</p>
+<p>These days, I&#39;m exploring <strong>deep learning runtimes, compilers, GPU programming, and numerical computing</strong>. I&#39;m particularly fascinated by the intersection of software and hardware, where clever system design can make a real difference in performance.</p>
+<p>Looking ahead, I hope to pursue a <strong>Ph.D. in Computer Science</strong>, focusing on efficient AI systems and compiler–runtime co-design. I enjoy understanding things from first principles, building tools, and turning curiosity into something useful.</p>
+<h2 id="news">News</h2><ul>
+<li><strong>2026-10-25</strong> — This site was rebuilt.🎉</li>
+<li><strong>See also: <a href="https://jasonkayzk.github.io/cn/">CN-Site</a> &amp; <a href="https://jasonkayzk.github.io/jp/">JP-Site</a></strong></li>
+</ul>
+<h2 id="contact">Contact</h2><p>Email: <a href="mailto:jasonkayzk@gmail.com">jasonkayzk@gmail.com</a></p>
+
+
+    
+    <section class="home-section">
+      <h2 class="home-section-title">Recent Writing</h2>
+      <div class="timeline-list">
+        
+        <div class="timeline-item">
+          <span class="timeline-index">01</span>
+          <div class="timeline-meta">
+            <span>Oct 20, 2026</span>
+            <span>·</span><span>essay</span>
+          </div>
+          <a href="/blog/2026/10/20/hello-world/">
+            <h3 class="timeline-title timeline-title-large">Hello, World</h3>
+          </a>
+        </div>
+        
+      </div>
+    </section>
+    
+
+    
+    <section class="home-section">
+      <h2 class="home-section-title">Education</h2>
+      
+<div class="experience-list">
+  
+  <div class="experience-item">
+    
+    <img src="/img/logos/scut.jpeg" alt="South China University of Technology" class="experience-logo">
+    
+    <div class="experience-details">
+      <div class="experience-title">South China University of Technology</div>
+      
+      <div class="experience-subtitle">Master in Electrical Engineering Theory and New Technology</div>
+      
+      
+      <div class="experience-org">Department of EE</div>
+      
+      <div class="experience-date">2018 - 2021</div>
+    </div>
+  </div>
+  
+  <div class="experience-item">
+    
+    <img src="/img/logos/hpu.png" alt="Henan Polytechnic University" class="experience-logo">
+    
+    <div class="experience-details">
+      <div class="experience-title">Henan Polytechnic University</div>
+      
+      <div class="experience-subtitle">Electrical Engineering and Automation (Integrated Bachelor-Master Program)</div>
+      
+      
+      <div class="experience-date">2014 - 2018</div>
+    </div>
+  </div>
+  
+</div>
+
+
+    </section>
+    
+
+    
+    <section class="home-section">
+      <h2 class="home-section-title">Experience</h2>
+      
+<div class="experience-list">
+  
+  <div class="experience-item">
+    
+    <img src="/img/logos/pzxy.jpeg" alt="PZXY" class="experience-logo">
+    
+    <div class="experience-details">
+      <div class="experience-title">PZXY</div>
+      
+      <div class="experience-subtitle">Lecturer</div>
+      
+      
+      <div class="experience-org">School of Computer and Software Engineering</div>
+      
+      <div class="experience-date">2024 – present</div>
+    </div>
+  </div>
+  
+  <div class="experience-item">
+    
+    <img src="/img/logos/tencent.png" alt="Tencent" class="experience-logo">
+    
+    <div class="experience-details">
+      <div class="experience-title">Tencent</div>
+      
+      <div class="experience-subtitle">Backend Engineer</div>
+      
+      
+      <div class="experience-org">CSIG(Tencent Cloud)</div>
+      
+      <div class="experience-date">2021 – 2023</div>
+    </div>
+  </div>
+  
+</div>
+
+
+    </section>
+    
+  </div>
+</div>
+
+    </main>
+    <footer class="site-footer">
+  <div class="footer-container">
+    <span class="corner corner-tl" aria-hidden="true"></span>
+    <span class="corner corner-tr" aria-hidden="true"></span>
+    <span class="corner corner-bl" aria-hidden="true"></span>
+    <span class="corner corner-br" aria-hidden="true"></span>
+    <p>&copy; 2026 Jasonkay · Built with <a href="https://hexo.io">Hexo</a> &amp; hosted on <a href="https://pages.github.com">GitHub Pages</a></p>
+  </div>
+</footer>
+
+    <script src="/assets/js/theme.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <author>
+    <name>Jasonkay</name>
+    <email>jasonkayzk@gmail.com</email>
+  </author>
+  <generator uri="https://hexo.io/">Hexo</generator>
+  <icon>https://www.gravatar.com/avatar/0a440a9619579f1429aa17ed946ce69c</icon>
+  <id>https://jasonkayzk.github.io/</id>
+  <link href="https://jasonkayzk.github.io/" rel="alternate"/>
+  <link href="https://jasonkayzk.github.io/feed.xml" rel="self"/>
+  <rights>All rights reserved 2026, Jasonkay</rights>
+  <subtitle>Personal website of Jasonkay — software engineer and aspiring researcher.</subtitle>
+  <title>Jasonkay's blog</title>
+  <updated>2026-10-25T13:47:12.974Z</updated>
+  <entry>
+    <author>
+      <name>Jasonkay</name>
+      <email>jasonkayzk@gmail.com</email>
+    </author>
+    <category term="essay" scheme="https://jasonkayzk.github.io/categories/essay/"/>
+    <category term="meta" scheme="https://jasonkayzk.github.io/tags/meta/"/>
+    <content>
+      <![CDATA[<p>Welcome to the rebuilt site. This post is a placeholder so the blog index andthe post layout have something to render. Delete it once you start writing realposts.</p><h2 id="writing-a-new-post">Writing a new post</h2><p>Create a file named <code>YYYY-MM-DD-your-title.md</code> in the <code>_posts</code> directory withthis front matter:</p><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">&quot;Your Title&quot;</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-10-20 09:00:00 +08:00</span></span><br><span class="line"><span class="attr">tags:</span> [<span class="string">systems</span>, <span class="string">rust</span>]</span><br><span class="line"><span class="attr">category:</span> <span class="string">technical</span></span><br><span class="line"><span class="attr">excerpt:</span> <span class="string">&quot;One or two sentences shown on the blog index.&quot;</span></span><br></pre></td></tr></table></figure>]]>
+    </content>
+    <id>https://jasonkayzk.github.io/blog/2026/10/20/hello-world/</id>
+    <link href="https://jasonkayzk.github.io/blog/2026/10/20/hello-world/"/>
+    <published>2026-10-20T01:00:00.000Z</published>
+    <summary>A placeholder first post explaining how posts on this site are written and organized.</summary>
+    <title>Hello, World</title>
+    <updated>2026-10-25T13:47:12.974Z</updated>
+  </entry>
+</feed>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Projects | Jasonkay&#39;s blog</title>
+    
+    <meta name="description" content="Personal website of Jasonkay — software engineer and aspiring researcher.">
+    <meta name="author" content="Jasonkay">
+    <meta name="theme-color" content="#faf7f0" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
+    <link rel="canonical" href="https://jasonkayzk.github.io/projects/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <script>
+      // Prevent flash of wrong theme: applied before first paint.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t !== 'light' && t !== 'dark') t = 'auto';
+          if (t === 'auto') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { /* localStorage unavailable: stay light */ }
+      })();
+    </script>
+  <link rel="alternate" href="/feed.xml" title="Jasonkay's blog" type="application/atom+xml">
+</head>
+  <body>
+    
+<nav class="site-nav">
+  <div class="nav-container">
+    <a class="nav-title" href="/">Jasonkay&#39;s blog</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+    <label for="nav-toggle" class="nav-hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="/" >Home</a></li>
+      <li><a href="/publications/" >Publications</a></li>
+      <li><a href="/blog/" >Blog</a></li>
+      <li><a href="/projects/" class="active">Projects</a></li>
+      <li><a href="/cv/" >CV</a></li>
+      <li class="nav-external">
+        <a href="https://jasonkayzk.github.io/cn/" target="_blank" rel="noopener">CN-Site</a>
+        <a href="https://jasonkayzk.github.io/jp/" target="_blank" rel="noopener">JP-Site</a>
+      </li>
+      <li class="nav-theme">
+        <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+    <main class="page-content">
+      <div class="page-container">
+  <div class="page-label">Building</div>
+  <h1 class="page-title">Projects</h1>
+  <div class="projects-list">
+    
+    <div class="project-card">
+      <h2 class="project-title">
+        
+        <a href="https://github.com/JasonkayZK/high-performance-computing-learn" target="_blank" rel="noopener">high-performance-computing-learn</a>
+        
+      </h2>
+      <p class="project-description">A hands-on learning repository exploring the fundamentals of high-performance computing (HPC),  from numerical analysis to parallel programming with CUDA, OpenMP, and MPI. It brings together practical examples and experiments to help developers understand  how to accelerate computations and make efficient use of modern hardware.
+</p>
+      
+      <div class="pub-tags">
+        <span class="tag-chip">HPC</span><span class="tag-chip">notes</span>
+      </div>
+      
+      
+      <div class="project-links">
+        
+        <a class="pub-link" href="https://github.com/JasonkayZK/high-performance-computing-learn" target="_blank" rel="noopener">GitHub</a>
+        
+        
+      </div>
+      
+    </div>
+    
+    <div class="project-card">
+      <h2 class="project-title">
+        
+        <a href="https://github.com/JasonkayZK/translatorx" target="_blank" rel="noopener">translatorx</a>
+        
+      </h2>
+      <p class="project-description">an open-source desktop app that turns everyday translation into active language learning. Instead of simply translating text, it helps users practice writing through interactive exercises,  word-by-word feedback, AI-powered tutoring,  and spaced repetition—all seamlessly integrated into their daily workflow.
+</p>
+      
+      <div class="pub-tags">
+        <span class="tag-chip">language-learning</span><span class="tag-chip">translator</span><span class="tag-chip">Tauri</span>
+      </div>
+      
+      
+      <div class="project-links">
+        
+        <a class="pub-link" href="https://github.com/JasonkayZK/translatorx" target="_blank" rel="noopener">GitHub</a>
+        
+        
+        <a class="pub-link" href="https://jasonkayzk.github.io/translatorx/" target="_blank" rel="noopener">Demo</a>
+        
+      </div>
+      
+    </div>
+    
+    <div class="project-card">
+      <h2 class="project-title">
+        
+        <a href="https://github.com/JasonkayZK/widgetx" target="_blank" rel="noopener">widgetx</a>
+        
+      </h2>
+      <p class="project-description">A lightweight desktop application built with Tauri that lets users embed customizable web widgets directly on their desktop. It turns websites and web-based tools into convenient, always-accessible desktop widgets,  combining the flexibility of web technologies with the efficiency of a native application.
+</p>
+      
+      <div class="pub-tags">
+        <span class="tag-chip">desktop-tool</span><span class="tag-chip">utility</span><span class="tag-chip">Tauri</span>
+      </div>
+      
+      
+      <div class="project-links">
+        
+        <a class="pub-link" href="https://github.com/JasonkayZK/widgetx" target="_blank" rel="noopener">GitHub</a>
+        
+        
+      </div>
+      
+    </div>
+    
+    <div class="project-card">
+      <h2 class="project-title">
+        
+        <a href="https://github.com/JasonkayZK/mock-protobuf.js" target="_blank" rel="noopener">mock-protobuf.js</a>
+        
+      </h2>
+      <p class="project-description">A TypeScript-based CLI tool that automatically generates realistic mock JSON data and HTTP mock servers from Protocol Buffer definitions. It simplifies API development and testing by eliminating manual mock data creation,  with support for customizable responses, regex-based filtering, and Protobuf HTTP annotations.
+</p>
+      
+      <div class="pub-tags">
+        <span class="tag-chip">CLI</span><span class="tag-chip">mock-tool</span>
+      </div>
+      
+      
+      <div class="project-links">
+        
+        <a class="pub-link" href="https://github.com/JasonkayZK/mock-protobuf.js" target="_blank" rel="noopener">GitHub</a>
+        
+        
+      </div>
+      
+    </div>
+    
+  </div>
+</div>
+
+    </main>
+    <footer class="site-footer">
+  <div class="footer-container">
+    <span class="corner corner-tl" aria-hidden="true"></span>
+    <span class="corner corner-tr" aria-hidden="true"></span>
+    <span class="corner corner-bl" aria-hidden="true"></span>
+    <span class="corner corner-br" aria-hidden="true"></span>
+    <p>&copy; 2026 Jasonkay · Built with <a href="https://hexo.io">Hexo</a> &amp; hosted on <a href="https://pages.github.com">GitHub Pages</a></p>
+  </div>
+</footer>
+
+    <script src="/assets/js/theme.js"></script>
+    
+  </body>
+</html>

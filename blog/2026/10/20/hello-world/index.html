@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello, World | Jasonkay&#39;s blog</title>
+    
+    <meta name="description" content="A placeholder first post explaining how posts on this site are written and organized.">
+    <meta name="author" content="Jasonkay">
+    <meta name="theme-color" content="#faf7f0" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
+    <link rel="canonical" href="https://jasonkayzk.github.io/blog/2026/10/20/hello-world/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <script>
+      // Prevent flash of wrong theme: applied before first paint.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t !== 'light' && t !== 'dark') t = 'auto';
+          if (t === 'auto') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { /* localStorage unavailable: stay light */ }
+      })();
+    </script>
+  <link rel="alternate" href="/feed.xml" title="Jasonkay's blog" type="application/atom+xml">
+</head>
+  <body>
+    
+<nav class="site-nav">
+  <div class="nav-container">
+    <a class="nav-title" href="/">Jasonkay&#39;s blog</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+    <label for="nav-toggle" class="nav-hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="/" >Home</a></li>
+      <li><a href="/publications/" >Publications</a></li>
+      <li><a href="/blog/" class="active">Blog</a></li>
+      <li><a href="/projects/" >Projects</a></li>
+      <li><a href="/cv/" >CV</a></li>
+      <li class="nav-external">
+        <a href="https://jasonkayzk.github.io/cn/" target="_blank" rel="noopener">CN-Site</a>
+        <a href="https://jasonkayzk.github.io/jp/" target="_blank" rel="noopener">JP-Site</a>
+      </li>
+      <li class="nav-theme">
+        <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+    <main class="page-content">
+      <div class="post-container">
+  <article class="post-article">
+    <header class="post-header">
+      <div class="page-label">essay</div>
+      <h1 class="post-title">Hello, World</h1>
+      <div class="post-meta">
+        <time datetime="2026-10-20T09:00:00+08:00">October 20, 2026</time>
+        
+        <span class="post-category-badge">essay</span>
+        
+        
+        
+        <span class="post-reading-time">1 min read</span>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>Welcome to the rebuilt site. This post is a placeholder so the blog index and
+the post layout have something to render. Delete it once you start writing real
+posts.</p>
+<h2 id="writing-a-new-post">Writing a new post</h2><p>Create a file named <code>YYYY-MM-DD-your-title.md</code> in the <code>_posts</code> directory with
+this front matter:</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">&quot;Your Title&quot;</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-10-20 09:00:00 +08:00</span></span><br><span class="line"><span class="attr">tags:</span> [<span class="string">systems</span>, <span class="string">rust</span>]</span><br><span class="line"><span class="attr">category:</span> <span class="string">technical</span></span><br><span class="line"><span class="attr">excerpt:</span> <span class="string">&quot;One or two sentences shown on the blog index.&quot;</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+    <footer class="post-footer">
+      <a href="/blog/" class="back-to-blog">&larr; Back to Blog</a>
+      <div class="post-nav">
+        
+        
+      </div>
+    </footer>
+  </article>
+</div>
+
+    </main>
+    <footer class="site-footer">
+  <div class="footer-container">
+    <span class="corner corner-tl" aria-hidden="true"></span>
+    <span class="corner corner-tr" aria-hidden="true"></span>
+    <span class="corner corner-bl" aria-hidden="true"></span>
+    <span class="corner corner-br" aria-hidden="true"></span>
+    <p>&copy; 2026 Jasonkay · Built with <a href="https://hexo.io">Hexo</a> &amp; hosted on <a href="https://pages.github.com">GitHub Pages</a></p>
+  </div>
+</footer>
+
+    <script src="/assets/js/theme.js"></script>
+    
+    <script src="/assets/js/lightbox.js"></script>
+    
+  </body>
+</html>
