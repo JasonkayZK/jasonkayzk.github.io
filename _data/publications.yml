@@ -1,0 +1,52 @@
+# Publications. Fields:
+#   title    — string
+#   authors  — list; the entry matching site.author (in _config.yml) is bolded
+#   venue    — string; use exactly "Preprint" to place the entry under Manuscript
+#   year     — integer, required for non-preprints
+#   award    — optional string, shown as a badge next to the venue
+#   tags     — list of topics; drives the filter pills
+#   pdf      — optional URL; makes the title a link
+#   links    — optional list of {label, url} rendered as outline buttons
+#   abstract — optional string, shown behind the Abstract toggle
+
+- title: "Placeholder Paper Title: A Study of Something Interesting"
+  authors:
+    - Your Name
+    - Alice Cooperauthor
+  venue: "Preprint"
+  tags: [LLM, Reasoning]
+  pdf: https://arxiv.org
+  links:
+    - label: arXiv
+      url: https://arxiv.org
+    - label: Code
+      url: https://github.com/JasonkayZK
+  abstract: >
+    This is a placeholder abstract. Replace it with the real abstract of the
+    paper. It is hidden behind the Abstract toggle on the page, so it can be a
+    few sentences longer than the excerpt shown anywhere else.
+
+- title: "Another Placeholder Paper: Systems and Such"
+  authors:
+    - Your Name
+    - Bob Cooperator
+    - Carol Cooperator
+  venue: "International Conference on Placeholder Research (ICPR)"
+  year: 2025
+  award: Best Paper Award
+  tags: [Systems, LLM]
+  pdf: https://arxiv.org
+  abstract: >
+    Second placeholder abstract. This entry demonstrates a year-grouped
+    publication with an award badge.
+
+- title: "A Third Placeholder Paper"
+  authors:
+    - Devin Cooperauthor
+    - Your Name
+  venue: "Workshop on Placeholder Computing (WPC)"
+  year: 2024
+  tags: [Systems]
+  abstract: >
+    Third placeholder abstract. This entry demonstrates a publication where
+    the site owner is not the first author.
