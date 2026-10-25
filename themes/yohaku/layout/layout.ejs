@@ -1,5 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head><meta charset="UTF-8"><title><%= page.title || config.title %></title></head>
-  <body><%- body %></body>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><% if (page.title && page.title !== '') { %><%= page.title %> | <% } %><%= config.title %></title>
+    <%
+      var desc = (page.excerpt || config.description || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+      if (desc.length > 160) desc = desc.slice(0, 160);
+    %>
+    <meta name="description" content="<%= desc %>">
+    <meta name="author" content="<%= config.author %>">
+    <meta name="theme-color" content="#faf7f0" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
+    <link rel="canonical" href="<%= full_url_for(page.path) %>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<%- url_for('assets/css/style.css') %>">
+    <script>
+      // Prevent flash of wrong theme: applied before first paint.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t !== 'light' && t !== 'dark') t = 'auto';
+          if (t === 'auto') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { /* localStorage unavailable: stay light */ }
+      })();
+    </script>
+  </head>
+  <body>
+    <%- partial('partial/nav') %>
+    <main class="page-content">
+      <%- body %>
+    </main>
+    <%- partial('partial/footer') %>
+    <script src="<%- url_for('assets/js/theme.js') %>"></script>
+  </body>
 </html>

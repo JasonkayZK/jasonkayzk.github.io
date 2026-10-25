@@ -1,0 +1,31 @@
+<div class="post-container">
+  <article class="post-article">
+    <header class="post-header">
+      <div class="page-label"><%= (page.categories && page.categories.length) ? page.categories.first().name : 'Writing' %></div>
+      <h1 class="post-title"><%= page.title %></h1>
+      <div class="post-meta">
+        <time datetime="<%= date(page.date, 'YYYY-MM-DDTHH:mm:ssZ') %>"><%= date(page.date, 'MMMM D, YYYY') %></time>
+        <% if (page.categories && page.categories.length) { %>
+        <span class="post-category-badge"><%= page.categories.first().name %></span>
+        <% } %>
+        <% var words = page.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length; %>
+        <% var minutes = Math.max(1, Math.floor(words / 200)); %>
+        <span class="post-reading-time"><%= minutes %> min read</span>
+      </div>
+    </header>
+    <div class="post-content">
+      <%- page.content %>
+    </div>
+    <footer class="post-footer">
+      <a href="<%- url_for('blog/') %>" class="back-to-blog">&larr; Back to Blog</a>
+      <div class="post-nav">
+        <% if (page.next) { %>
+        <a href="<%- url_for(page.next.path) %>" class="post-nav-prev">&larr; <%= page.next.title %></a>
+        <% } %>
+        <% if (page.prev) { %>
+        <a href="<%- url_for(page.prev.path) %>" class="post-nav-next"><%= page.prev.title %> &rarr;</a>
+        <% } %>
+      </div>
+    </footer>
+  </article>
+</div>
