@@ -1,20 +1,25 @@
-# Academic Blog Rebuild Implementation Plan
+# Academic Blog Rebuild Implementation Plan (v2 — Yohaku style)
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Rebuild `jasonkayzk.github.io` from scratch as an English academic personal site with a hand-written Jekyll theme replicating <https://jinyansu1.github.io/>, deployed via GitHub Pages native build from the `save` branch.
+**Goal:** Rebuild `jasonkayzk.github.io` from scratch as an English academic personal site (PhD-application oriented) whose visual language is a vanilla HTML/CSS/JS port of https://innei.in/en (Yohaku), deployed via GitHub Pages native build from the `save` branch.
 
-**Architecture:** Jekyll (github-pages gem) with fully hand-written layouts includes, data-driven content in `_data/*.yml`, one stylesheet adapted from the reference site, two small vanilla-JS filter scripts. No frameworks, no CI — GitHub Pages builds the `save` branch root directly.
+**Architecture:** Jekyll (github-pages gem) with hand-written layouts/includes, data-driven content in `_data/*.yml`, one stylesheet implementing Yohaku's design system via CSS custom properties (light/dark themes), three small vanilla-JS files. No frameworks, no CI.
 
-**Tech Stack:** Ruby 3.3 + Bundler, `github-pages` gem (Jekyll 3.10, kramdown, Rouge), jekyll-feed for RSS.
+**Tech Stack:** Ruby 3.3 + Bundler, `github-pages` gem (Jekyll 3.10, kramdown, Rouge), jekyll-feed for RSS. Google Fonts: EB Garamond + Inter.
 
-**Spec:** `docs/superpowers/specs/2026-10-25-academic-blog-rebuild-design.md`
+**Spec:** `docs/superpowers/specs/2026-10-25-academic-blog-rebuild-design.md` (revised — Yohaku)
 
-**Working directory:** `/Users/zk/workspace/blog` (git branch `save`, clean). All commands run from repo root unless noted. `__bak/` and `docs/` already exist and must never be deleted or modified.
+**Working directory:** `/Users/zk/workspace/blog` (git branch `save`). All commands run from repo root. `__bak/` and `docs/` already exist — never delete or modify them. Commit messages verbatim including the Co-Authored-By line.
 
-**Conventions used everywhere:**
-- Site owner name / text values are placeholders (`Your Name` etc.) — user edits them later by config/YAML only.
-- Commit messages end with the attribution line shown in each commit command. If working outside the main session, keep it verbatim.
+**Environment note (verified):** this machine's Command Line Tools has broken C++ headers (`/usr/include/c++/v1/` holds only stale files). The `github-pages` gem's sassc native build needs `CPLUS_INCLUDE_PATH` pointed at the SDK. Use this exact invocation whenever running `bundle install` the first time:
+
+```bash
+export CPLUS_INCLUDE_PATH="$(xcrun --show-sdk-path)/usr/include/c++/v1:$(xcrun --show-sdk-path)/usr/include"
+bundle install
+```
+
+`Gemfile.lock` gets committed afterwards, so later `bundle exec` calls don't rebuild native gems.
 
 ---
 
@@ -52,12 +57,15 @@ title: Your Name
 author: Your Name
 email: your-email@example.com
 description: >-
-  Personal website of Your Name — software engineer and researcher.
+  Personal website of Your Name — software engineer and aspiring researcher.
   Replace this description in _config.yml.
-affiliation: "Ph.D. Student at Placeholder University"
+affiliation: "Aspiring Ph.D. Student"
+hero_tagline: "I turn curiosity into systems"
+hero_keywords: [LLM, Systems, RL]
+site_since: 2019
 avatar: "/img/photo.svg"
 
-# Social links shown in the home sidebar (leave a value empty to hide the icon)
+# Social links shown on the home hero (leave a value empty to hide the icon)
 github_username: "JasonkayZK"
 scholar_url: "https://scholar.google.com"
 twitter_username: ""
@@ -92,13 +100,17 @@ defaults:
 
 - [ ] **Step 4: Install dependencies**
 
-Run: `bundle install`
-Expected: exit 0, `Bundle complete!` (first run takes a few minutes — sassc compiles natively). If the `github-pages` gem fails to install on this machine, fix the toolchain (`xcode-select --install`) and retry — do NOT swap for plain `gem "jekyll"` (GitHub Pages builds with the github-pages versions and we must match them).
+```bash
+export CPLUS_INCLUDE_PATH="$(xcrun --show-sdk-path)/usr/include/c++/v1:$(xcrun --show-sdk-path)/usr/include"
+bundle install
+```
+
+Expected: exit 0, `Bundle complete!` (first run compiles sassc, takes minutes). If it fails on C++ headers, verify the env var was exported in the same shell invocation and retry. Do NOT swap for plain `gem "jekyll"`.
 
 - [ ] **Step 5: Verify a clean build on the empty site**
 
 Run: `bundle exec jekyll build`
-Expected: exit 0, `Source: /Users/zk/workspace/blog ... Destination: _site ... Generation done`. A `_site/` directory appears (may be nearly empty).
+Expected: exit 0, `Generation done`, a `_site/` directory appears.
 
 - [ ] **Step 6: Commit**
 
@@ -111,7 +123,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 2: Base layout, nav, footer, social icons, page layout, stub index
+### Task 2: Base layout, nav (with theme toggle), footer, social icons, theme.js
 
 **Files:**
 - Create: `_layouts/default.html`
@@ -119,7 +131,8 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Create: `_includes/nav.html`
 - Create: `_includes/footer.html`
 - Create: `_includes/social-links.html`
-- Create: `index.md` (stub; replaced in Task 4)
+- Create: `assets/js/theme.js`
+- Create: `index.md` (stub, replaced in Task 4)
 
 - [ ] **Step 1: Write `_layouts/default.html`**
 
@@ -133,12 +146,25 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
     <title>{% if page.title %}{{ page.title | escape }} | {% endif %}{{ site.title | escape }}</title>
     <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | strip_newlines | truncate: 160 | escape }}">
     <meta name="author" content="{{ site.author | escape }}">
+    <meta name="theme-color" content="#faf7f0" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
     <link rel="canonical" href="{{ page.url | replace: 'index.html', '' | absolute_url }}">
     <link rel="alternate" type="application/atom+xml" title="{{ site.title | escape }}" href="{{ '/feed.xml' | absolute_url }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ '/assets/css/style.scss' | relative_url }}">
+    <script>
+      // Prevent flash of wrong theme: applied before first paint.
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t !== 'light' && t !== 'dark') t = 'auto';
+          if (t === 'auto') t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { /* localStorage unavailable: stay light */ }
+      })();
+    </script>
     {% feed_meta %}
   </head>
   <body>
@@ -147,6 +173,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
       {{ content }}
     </main>
     {% include footer.html %}
+    <script src="{{ '/assets/js/theme.js' | relative_url }}"></script>
   </body>
 </html>
 ```
@@ -187,6 +214,12 @@ layout: default
         <a href="https://jasonkayzk.github.io/cn/" target="_blank" rel="noopener">中文站</a>
         <a href="https://jasonkayzk.github.io/jp/" target="_blank" rel="noopener">日文站</a>
       </li>
+      <li class="nav-theme">
+        <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </li>
     </ul>
   </div>
 </nav>
@@ -197,7 +230,11 @@ layout: default
 ```html
 <footer class="site-footer">
   <div class="footer-container">
-    <p>&copy; {{ site.time | date: '%Y' }} {{ site.author }}. Built with <a href="https://jekyllrb.com">Jekyll</a> &amp; hosted on <a href="https://pages.github.com">GitHub Pages</a>.</p>
+    <span class="corner corner-tl" aria-hidden="true"></span>
+    <span class="corner corner-tr" aria-hidden="true"></span>
+    <span class="corner corner-bl" aria-hidden="true"></span>
+    <span class="corner corner-br" aria-hidden="true"></span>
+    <p>&copy; {{ site.time | date: '%Y' }} {{ site.author }} · Built with <a href="https://jekyllrb.com">Jekyll</a> &amp; hosted on <a href="https://pages.github.com">GitHub Pages</a></p>
   </div>
 </footer>
 ```
@@ -232,7 +269,38 @@ layout: default
 </div>
 ```
 
-- [ ] **Step 6: Write stub `index.md`**
+- [ ] **Step 6: Write `assets/js/theme.js`**
+
+```javascript
+(function () {
+  var root = document.documentElement;
+  var btn = document.querySelector('.theme-toggle');
+  if (!btn) return;
+
+  function current() {
+    return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  // Follow OS changes while in auto mode (no stored preference).
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  var onChange = function (e) {
+    try {
+      if (!localStorage.getItem('theme')) {
+        root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+      }
+    } catch (err) { /* ignore */ }
+  };
+  if (mq.addEventListener) mq.addEventListener('change', onChange);
+
+  btn.addEventListener('click', function () {
+    var next = current() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (err) { /* ignore */ }
+  });
+})();
+```
+
+- [ ] **Step 7: Write stub `index.md`**
 
 ```markdown
 ---
@@ -241,44 +309,97 @@ layout: page
 Coming soon.
 ```
 
-- [ ] **Step 7: Build and verify**
+Note: the stylesheet referenced (`/assets/css/style.scss`) does not exist until Task 3 — the page will be unstyled, which is expected at this stage.
+
+- [ ] **Step 8: Build and verify**
 
 Run: `bundle exec jekyll build`
 Expected: exit 0.
 
-Run: `grep -c 'site-nav' _site/index.html && grep -c 'jasonkayzk.github.io/cn/' _site/index.html`
-Expected: both counts ≥ 1 (nav present, cn external link present).
+Run: `grep -c 'site-nav' _site/index.html && grep -c 'theme-toggle' _site/index.html && grep -c 'jasonkayzk.github.io/cn/' _site/index.html`
+Expected: all ≥ 1.
 
-Run: `grep -c 'feed.xml' _site/index.html`
-Expected: ≥ 1 (jekyll-feed link tag present).
+Run: `grep -c "localStorage.getItem('theme')" _site/index.html`
+Expected: ≥ 1 (inline FOUC guard present).
 
-- [ ] **Step 8: Commit**
+Run: `ls _site/assets/js/theme.js`
+Expected: exists.
+
+- [ ] **Step 9: Commit**
 
 ```bash
-git add _layouts _includes index.md
-git commit -m "feat: base layout with nav, footer, social links
+git add _layouts _includes index.md assets/js/theme.js
+git commit -m "feat: base layout with nav, theme toggle, footer
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
 
-### Task 3: Full stylesheet (reference-site replica + additions)
+### Task 3: Full Yohaku stylesheet
 
 **Files:**
 - Create: `assets/css/style.scss`
 
 - [ ] **Step 1: Write `assets/css/style.scss`**
 
-The file must start with two lines of triple dashes (Jekyll SCSS front matter), then the full CSS. Content is the reference site's stylesheet (reformatted) plus 5 additions: footer styles, `.nav-external`, project cards, 404 page, and a taller mobile nav max-height.
+The file starts with the required SCSS front matter (`---` newline `---`), then all CSS below.
 
 ```scss
 ---
 ---
 
-/* ---------------------------------------------------------------------------
-   Base — adapted from the reference site jinyansu1.github.io
-----------------------------------------------------------------------------*/
+/* ==========================================================================
+   Yohaku-inspired design system, ported to plain CSS for Jekyll.
+   Light: warm paper #faf7f0 / rose accent #c56473.
+   Dark:  #1c1c1e / #e095a4.  Everything switches via [data-theme].
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+  --paper: #faf7f0;
+  --paper-raised: #fffdf8;
+  --accent: #c56473;
+  --accent-soft: rgba(197, 100, 115, 0.08);
+  --accent-glow: rgba(197, 100, 115, 0.28);
+  --hairline: rgba(0, 0, 0, 0.06);
+  --hairline-strong: rgba(0, 0, 0, 0.12);
+  --card-bg: rgba(255, 255, 255, 0.5);
+  --card-border: rgba(0, 0, 0, 0.05);
+  --ink: #141312;
+  --haze: #57534e;
+  --faint: #78716c;
+
+  --neutral-1: #f9f8f5;
+  --neutral-2: #f0efeb;
+  --neutral-3: #e3e1db;
+  --neutral-5: #a8a29a;
+
+  --font-serif: "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Monaco, Consolas, monospace;
+}
+
+[data-theme="dark"] {
+  --paper: #1c1c1e;
+  --paper-raised: #242424;
+  --accent: #e095a4;
+  --accent-soft: rgba(224, 149, 164, 0.1);
+  --accent-glow: rgba(224, 149, 164, 0.3);
+  --hairline: rgba(255, 255, 255, 0.07);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.06);
+  --ink: #f8f8f8;
+  --haze: #a5a3a0;
+  --faint: #8b8887;
+
+  --neutral-1: #141414;
+  --neutral-2: #242424;
+  --neutral-3: #2e2e2e;
+  --neutral-5: #646264;
+}
+
 *,
 *::before,
 *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -286,524 +407,607 @@ The file must start with two lines of triple dashes (Jekyll SCSS front matter), 
 html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #1a1a2e;
-  background-color: #fff;
-  line-height: 1.7;
-  padding-top: 60px;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background-color: var(--paper);
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-weight: 500;
   line-height: 1.3;
-  margin-bottom: 0.75em;
-  color: #1a1a2e;
+  color: var(--ink);
 }
-h1 { font-size: 2rem; }
+h1 { font-size: 2.2rem; }
 h2 { font-size: 1.5rem; }
-h3 { font-size: 1.25rem; }
+h3 { font-size: 1.2rem; }
+h2, h3 { letter-spacing: 0.01em; }
 
 p { margin-bottom: 1.25em; }
 
-a { color: #2563EB; text-decoration: none; transition: color 0.2s ease; }
-a:hover { color: #1043b3; }
+a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
+a:hover { color: var(--ink); }
 
 img { max-width: 100%; height: auto; }
 
 ul, ol { margin-bottom: 1.25em; padding-left: 1.5em; }
 
 blockquote {
-  border-left: 3px solid #2563EB;
+  border-left: 2px solid var(--accent);
   margin: 1.5em 0;
-  padding: 0.5em 1.5em;
-  color: #6b7280;
+  padding: 0.25em 1.25em;
+  color: var(--haze);
+  font-family: var(--font-serif);
   font-style: italic;
-  background: #f8fafc;
-  border-radius: 0 4px 4px 0;
 }
 
-hr { border: none; height: 1px; background: #e5e7eb; margin: 2em 0; }
+hr { border: none; height: 1px; background: var(--hairline); margin: 2em 0; }
 
 code {
-  font-family: 'SF Mono', Monaco, Consolas, 'Liberation Mono', monospace;
-  font-size: 0.9em;
-  background: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--neutral-2);
   padding: 0.15em 0.4em;
-  border-radius: 3px;
-  border: 1px solid #e5e7eb;
+  border-radius: 4px;
 }
 pre {
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--neutral-2);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
   padding: 1em 1.25em;
   overflow-x: auto;
   margin-bottom: 1.5em;
 }
-pre code { background: none; border: none; padding: 0; font-size: 0.875em; }
+pre code { background: none; padding: 0; font-size: 0.85rem; }
 
 table { width: 100%; border-collapse: collapse; margin-bottom: 1.5em; }
-th, td { text-align: left; padding: 0.6em 1em; border-bottom: 1px solid #e5e7eb; }
-th { font-weight: 600; background: #f8fafc; }
+th, td { text-align: left; padding: 0.6em 1em; border-bottom: 1px solid var(--hairline); }
+th { font-weight: 600; background: var(--neutral-1); }
 
 strong { font-weight: 600; }
 
-/* ---------------------------------------------------------------------------
-   Layout containers
-----------------------------------------------------------------------------*/
-.page-content { min-height: calc(100vh - 60px - 80px); }
+/*--------------------------------------------------------------------------
+  Layout
+--------------------------------------------------------------------------*/
+.page-content { min-height: calc(100vh - 60px - 100px); }
 
-.page-container,
-.post-container,
-.publications-container { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+.page-container { max-width: 880px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+.post-container { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
 
-.home-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem;
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 3rem;
-  align-items: start;
+.page-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: var(--faint);
+  font-family: var(--font-sans);
+}
+.page-title {
+  margin: 0.6rem 0 2.5rem;
+  font-size: 1.75rem;
+  font-weight: 500;
 }
 
-.page-title { margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #f8fafc; }
-
-/* ---------------------------------------------------------------------------
-   Navigation
-----------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------
+  Navigation
+--------------------------------------------------------------------------*/
 .site-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 60px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+  backdrop-filter: blur(8px);
+  transition: background-color 0.3s ease;
 }
 .nav-container {
-  max-width: 1200px;
-  width: 100%;
+  max-width: 1020px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .nav-title {
-  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1a1a2e;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink);
 }
-.nav-title:hover { color: #2563EB; }
-.nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
-.nav-links a {
-  color: #6b7280;
-  font-weight: 500;
-  font-size: 0.95rem;
+.nav-title:hover { color: var(--accent); }
+.nav-links { list-style: none; display: flex; align-items: center; gap: 1.6rem; margin: 0; padding: 0; }
+.nav-links > li > a {
+  color: var(--haze);
+  font-size: 0.9rem;
   padding: 0.25em 0;
-  border-bottom: 2px solid transparent;
+  transition: color 0.2s;
+}
+.nav-links > li > a:hover { color: var(--accent); }
+.nav-links > li > a.active { color: var(--accent); }
+.nav-external { display: flex; gap: 1.2rem; padding-left: 1.6rem; margin-left: 0.4rem; border-left: 1px solid var(--hairline); }
+.nav-theme { display: flex; align-items: center; }
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--haze);
+  cursor: pointer;
   transition: color 0.2s, border-color 0.2s;
 }
-.nav-links a:hover,
-.nav-links a.active { color: #2563EB; border-bottom-color: #2563EB; }
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+[data-theme="light"] .icon-moon { display: none; }
+[data-theme="dark"] .icon-sun { display: none; }
+
 .nav-toggle { display: none; }
 .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; }
-.nav-hamburger span { width: 24px; height: 2px; background: #1a1a2e; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger span { width: 22px; height: 1.5px; background: var(--ink); transition: transform 0.3s, opacity 0.3s; }
 
-/* ADDITION: external cn/jp site links in the nav */
-.nav-external {
-  display: flex;
-  gap: 1.5rem;
-  padding-left: 1.75rem;
-  margin-left: 0.25rem;
-  border-left: 1px solid #e5e7eb;
-}
-
-/* ---------------------------------------------------------------------------
-   Footer
-----------------------------------------------------------------------------*/
-/* ADDITION: footer not present in the reference stylesheet */
-.site-footer { border-top: 1px solid #e5e7eb; background: #fff; }
+/*--------------------------------------------------------------------------
+  Footer
+--------------------------------------------------------------------------*/
+.site-footer { border-top: 1px solid var(--hairline); }
 .footer-container {
-  max-width: 1200px;
+  max-width: 1020px;
   margin: 0 auto;
-  padding: 1.75rem 1.5rem;
+  padding: 2.5rem 1.5rem 3rem;
+  position: relative;
   text-align: center;
-  color: #6b7280;
-  font-size: 0.9rem;
+  color: var(--faint);
+  font-size: 0.85rem;
 }
 .footer-container p { margin-bottom: 0; }
-.footer-container a { color: #2563EB; }
+.footer-container a { color: var(--haze); }
+.footer-container a:hover { color: var(--accent); }
+/* innei-style corner marks */
+.corner { position: absolute; width: 14px; height: 14px; border-color: var(--hairline-strong); border-style: solid; border-width: 0; }
+.corner-tl { top: 1.2rem; left: 0;    border-top-width: 1px;    border-left-width: 1px; }
+.corner-tr { top: 1.2rem; right: 0;   border-top-width: 1px;    border-right-width: 1px; }
+.corner-bl { bottom: 1.2rem; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
+.corner-br { bottom: 1.2rem; right: 0;border-bottom-width: 1px; border-right-width: 1px; }
 
-/* ---------------------------------------------------------------------------
-   Home — sidebar + experience lists
-----------------------------------------------------------------------------*/
-.home-sidebar { text-align: center; position: sticky; top: calc(60px + 2rem); }
-.avatar {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 1rem;
-  border: 3px solid #f8fafc;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+/*--------------------------------------------------------------------------
+  Home — hero
+--------------------------------------------------------------------------*/
+.hero {
+  position: relative;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.5rem 5rem;
+  overflow: hidden;
 }
-.home-name { font-size: 1.4rem; margin-bottom: 0.5rem; }
-.home-affiliation { font-size: 0.9rem; color: #6b7280; line-height: 1.5; margin-bottom: 1rem; }
-.social-links { display: flex; justify-content: center; gap: 0.75rem; margin-top: 0.5rem; }
-.social-links a {
-  color: #6b7280;
+.hero-glow {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: 450px;
+  height: 450px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 55%);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.hero-avatar {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--hairline-strong), 0 8px 24px rgba(0, 0, 0, 0.08);
+  object-fit: cover;
+  margin-bottom: 2rem;
+}
+.hero-greeting {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.hero-greeting .hero-name {
+  font-weight: 560;
+  letter-spacing: -0.035em;
+  color: var(--accent);
+  text-shadow: 0 0 28px var(--accent-glow);
+}
+.hero-greeting .wave { display: inline-block; transform: rotate(-8deg) translateY(-0.03em); margin-left: 0.14em; font-weight: 300; }
+.hero-tagline {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--haze);
+  margin-bottom: 1.75rem;
+}
+.hero-keywords {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+.hero-keyword {
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.25em 0.9em;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  color: var(--haze);
+}
+.hero-stats {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: var(--faint);
+  margin-bottom: 2.25rem;
+  font-variant-numeric: tabular-nums;
+}
+.hero-stats strong { color: var(--haze); font-weight: 600; }
+.hero .social-links { gap: 0.9rem; }
+.hero .social-links a { color: var(--haze); }
+.hero .social-links a:hover { color: var(--accent); transform: translateY(-2px); }
+
+/* Entrance animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-avatar, .hero-greeting, .hero-tagline, .hero-keywords, .hero-stats, .hero .social-links {
+  opacity: 0;
+  animation: fade-up 0.7s ease forwards;
+}
+.hero-greeting { animation-delay: 0.05s; }
+.hero-tagline { animation-delay: 0.15s; }
+.hero-keywords { animation-delay: 0.25s; }
+.hero-stats { animation-delay: 0.35s; }
+.hero .social-links { animation-delay: 0.45s; }
+
+/*--------------------------------------------------------------------------
+  Home — below hero
+--------------------------------------------------------------------------*/
+.home-body { max-width: 880px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+.home-section { margin-top: 4rem; }
+.home-section-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+  color: var(--haze);
+  margin-bottom: 1.25rem;
+}
+
+/* Timeline list (Recent Writing) */
+.timeline-list { position: relative; }
+.timeline-list::before {
+  content: "";
+  position: absolute;
+  top: 1rem; bottom: 1rem; left: 19px;
+  width: 1px;
+  background: var(--hairline-strong);
+}
+.timeline-item { position: relative; padding: 0.75rem 0 0.75rem 3rem; }
+.timeline-index {
+  position: absolute;
+  left: 19px;
+  top: 0.9rem;
+  transform: translateX(-50%);
+  background: var(--paper);
+  padding: 0 0.4em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+}
+.timeline-item:first-child .timeline-index { color: var(--accent); }
+.timeline-meta { font-size: 0.78rem; color: var(--faint); margin-bottom: 0.15rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.timeline-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink);
   transition: color 0.2s;
+}
+.timeline-item a { color: inherit; }
+.timeline-item a:hover .timeline-title { color: var(--accent); }
+.timeline-title-large { font-size: 1.35rem; }
+
+/* Experience rows (Education / Experience) */
+.social-links { display: flex; gap: 0.75rem; }
+.social-links a {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #f8fafc;
+  color: var(--haze);
+  background: var(--accent-soft);
+  transition: color 0.2s, background-color 0.2s, transform 0.2s;
 }
-.social-links a:hover { color: #2563EB; background: #dbeafe; }
+.social-links a:hover { color: var(--accent); background: var(--accent-soft); }
 
-.home-content h2 { font-size: 1.3rem; color: #1a1a2e; margin-top: 1.5rem; }
-.home-content h2:first-child { margin-top: 0; }
-.research-highlight { color: #1a1a2e; font-weight: 700; }
-
-.experience-list { display: flex; flex-direction: column; gap: 1rem; }
+.experience-list { display: flex; flex-direction: column; gap: 0.9rem; }
 .experience-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.75rem 1rem;
-  background: #f8fafc;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  transition: box-shadow 0.2s;
+  padding: 0.85rem 1.1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.experience-item:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
-.experience-logo { width: 48px; height: 48px; object-fit: contain; border-radius: 6px; flex-shrink: 0; }
+.experience-item:hover { transform: translateY(-1px); box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05); }
+.experience-logo { width: 44px; height: 44px; object-fit: contain; border-radius: 8px; flex-shrink: 0; }
 .experience-details { flex: 1; min-width: 0; }
-.experience-title { font-weight: 600; font-size: 0.95rem; color: #1a1a2e; }
-.experience-org { font-size: 0.85rem; color: #6b7280; }
-.experience-subtitle { font-size: 0.85rem; color: #6b7280; }
-.experience-date { font-size: 0.8rem; color: #6b7280; font-style: italic; }
+.experience-title { font-weight: 600; font-size: 0.95rem; color: var(--ink); }
+.experience-subtitle, .experience-org { font-size: 0.85rem; color: var(--haze); }
+.experience-date { font-size: 0.8rem; color: var(--faint); font-style: italic; font-family: var(--font-serif); }
 
-/* ---------------------------------------------------------------------------
-   Publications
-----------------------------------------------------------------------------*/
-.pub-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
-.pub-filter-pill {
-  display: inline-block;
-  padding: 0.35em 0.9em;
-  border: 1px solid #e5e7eb;
-  border-radius: 20px;
-  font-size: 0.8rem;
+/*--------------------------------------------------------------------------
+  Pills (used by publications filter, blog tag filter, tags)
+--------------------------------------------------------------------------*/
+.filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.filter-pill {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
   font-weight: 500;
-  color: #6b7280;
+  padding: 0.3em 0.95em;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  background: none;
+  color: var(--haze);
   cursor: pointer;
   transition: all 0.2s;
-  background: none;
 }
-.pub-filter-pill:hover { border-color: #2563EB; color: #2563EB; }
-.pub-filter-pill.active { background: #2563EB; color: #fff; border-color: #2563EB; }
+.filter-pill:hover { border-color: var(--accent); color: var(--accent); }
+.filter-pill.active { background: var(--accent); border-color: var(--accent); color: var(--paper-raised); }
+.tag-chip {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.12em 0.6em;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
 
-.pub-year-section { margin-bottom: 2rem; }
+/*--------------------------------------------------------------------------
+  Publications
+--------------------------------------------------------------------------*/
+.pub-year-section { margin-bottom: 2.5rem; }
 .pub-year {
-  font-size: 1.3rem;
-  color: #6b7280;
-  border-bottom: 2px solid #f8fafc;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-family: var(--font-serif);
+  color: var(--faint);
+  border-bottom: 1px dashed var(--hairline-strong);
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
-
-.pub-card { padding: 1.25rem 0; border-bottom: 1px solid #e5e7eb; }
+.pub-card { padding: 1.4rem 0; border-bottom: 1px solid var(--hairline); }
 .pub-card:last-child { border-bottom: none; }
 .pub-title {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1a1a2e;
-  margin-bottom: 0.3rem;
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink);
+  margin-bottom: 0.35rem;
 }
-.pub-authors { font-size: 0.9rem; color: #6b7280; margin-bottom: 0.25rem; }
-.pub-venue { font-size: 0.9rem; color: #6b7280; font-style: italic; margin-bottom: 0.5rem; }
+.pub-card > .pub-card-main > .pub-title a { color: inherit; }
+.pub-card > .pub-card-main > .pub-title a:hover { color: var(--accent); }
+.pub-authors { font-size: 0.9rem; color: var(--haze); margin-bottom: 0.25rem; }
+.pub-venue { font-size: 0.9rem; color: var(--haze); font-style: italic; font-family: var(--font-serif); margin-bottom: 0.6rem; }
 .pub-award {
   display: inline-block;
-  background: #fef2f2;
-  color: #dc2626;
-  font-size: 0.8rem;
+  font-family: var(--font-sans);
   font-style: normal;
+  font-size: 0.75rem;
   font-weight: 600;
-  padding: 0.1em 0.5em;
-  border-radius: 4px;
+  padding: 0.1em 0.6em;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
   margin-left: 0.5rem;
 }
-.pub-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.pub-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
 .pub-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .pub-link {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
-  padding: 0.25em 0.75em;
-  border: 1px solid #2563EB;
-  border-radius: 4px;
-  color: #2563EB;
+  padding: 0.22em 0.8em;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  background: none;
   transition: background 0.2s, color 0.2s;
 }
-.pub-link:hover { background: #2563EB; color: #fff; }
+.pub-link:hover { background: var(--accent); color: var(--paper-raised); }
 .pub-abstract-toggle {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.25em 0.75em;
-  border: 1px solid #10b981;
-  border-radius: 4px;
-  color: #10b981;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.22em 0.8em;
+  border: 1px dashed var(--hairline-strong);
+  border-radius: 999px;
+  color: var(--haze);
   background: none;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  font-family: inherit;
-}
-.pub-abstract-toggle:hover { background: #10b981; color: #fff; }
-.pub-abstract-toggle[aria-expanded="true"] { background: #10b981; color: #fff; }
-.pub-abstract-toggle[aria-expanded="true"] .pub-chevron { transform: rotate(180deg); }
-.pub-chevron { font-size: 0.75rem; transition: transform 0.3s ease; }
-.pub-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-.pub-tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 500;
-  padding: 0.15em 0.5em;
-  background: #f8fafc;
-  color: #6b7280;
-  border-radius: 3px;
-  border: 1px solid #e5e7eb;
-}
-.pub-details { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-.pub-details[aria-hidden="false"] { max-height: 800px; }
-.pub-abstract {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f8fafc;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: #6b7280;
-  border-left: 3px solid #10b981;
-}
-.pub-figure { margin-top: 1rem; text-align: center; }
-.pub-figure img { max-width: 100%; border-radius: 6px; border: 1px solid #e5e7eb; }
-
-/* ---------------------------------------------------------------------------
-   Blog — list + posts
-----------------------------------------------------------------------------*/
-.blog-container { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
-.blog-section { margin-bottom: 2.5rem; }
-.blog-section-title { font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f8fafc; }
-.blog-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
-.tag-pill {
-  display: inline-block;
-  padding: 0.3em 0.85em;
-  border: 1px solid #e5e7eb;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #6b7280;
   cursor: pointer;
   transition: all 0.2s;
-  background: none;
-  font-family: inherit;
 }
-.tag-pill:hover { border-color: #2563EB; color: #2563EB; }
-.tag-pill.active { background: #2563EB; color: #fff; border-color: #2563EB; }
-.tag-badge {
-  display: inline-block;
-  background: #f8fafc;
-  color: #6b7280;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.1em 0.5em;
-  border-radius: 4px;
+.pub-abstract-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.pub-abstract-toggle[aria-expanded="true"] { border-style: solid; color: var(--accent); }
+.pub-chevron { font-size: 0.7rem; transition: transform 0.3s ease; }
+.pub-abstract-toggle[aria-expanded="true"] .pub-chevron { transform: rotate(180deg); }
+.pub-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.pub-details { display: none; }
+.pub-details[aria-hidden="false"] { display: block; }
+.pub-abstract {
+  margin-top: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-left: 2px solid var(--accent);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--haze);
 }
 
-.blog-post-card { padding: 1.5rem 0; border-bottom: 1px solid #e5e7eb; }
-.blog-post-card:last-child { border-bottom: none; }
-.blog-post-card-title { font-size: 1.15rem; margin-bottom: 0.3rem; }
-.blog-post-card-title a { color: #1a1a2e; }
-.blog-post-card-title a:hover { color: #2563EB; }
-.blog-post-card-meta {
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-.blog-post-card-excerpt { font-size: 0.95rem; color: #6b7280; margin-bottom: 0; }
+/*--------------------------------------------------------------------------
+  Blog list (timeline style, innei-like)
+--------------------------------------------------------------------------*/
+.blog-container { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+.blog-container .timeline-list { margin-top: 0.5rem; }
 
-.post-header { margin-bottom: 2rem; }
-.post-title { font-size: 2rem; margin-bottom: 0.5rem; }
-.post-meta { display: flex; align-items: center; gap: 1rem; color: #6b7280; font-size: 0.9rem; }
+/*--------------------------------------------------------------------------
+  Post page
+--------------------------------------------------------------------------*/
+.post-header { margin-bottom: 2.25rem; }
+.post-title { font-size: 2rem; font-weight: 500; margin-bottom: 0.6rem; }
+.post-meta { display: flex; align-items: center; gap: 1rem; color: var(--faint); font-size: 0.85rem; flex-wrap: wrap; }
 .post-category-badge {
   display: inline-block;
-  background: #dbeafe;
-  color: #2563EB;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.15em 0.6em;
-  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.12em 0.7em;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
-.post-reading-time { color: #6b7280; }
+.post-reading-time { font-variant-numeric: tabular-nums; }
 
-.post-content { font-size: 1.05rem; line-height: 1.8; }
-.post-content h2 { margin-top: 2rem; }
-.post-content h3 { margin-top: 1.5rem; }
-.post-content img { border-radius: 6px; margin: 1.5em 0; }
-.post-content table {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  margin: 1.25em 0;
-}
-.post-content th, .post-content td { padding: 0.4em 0.65em; border: 1px solid #e5e7eb; white-space: nowrap; }
-.post-content th { background: #f8fafc; font-weight: 600; }
+.post-content { font-size: 1rem; line-height: 1.85; color: var(--ink); }
+.post-content h2 { margin-top: 2.5rem; }
+.post-content h3 { margin-top: 2rem; }
+.post-content img { border-radius: 8px; margin: 1.5em 0; }
+.post-content a { text-decoration: underline; text-decoration-color: var(--accent-soft); text-underline-offset: 3px; }
+.post-content a:hover { text-decoration-color: var(--accent); }
 
-.post-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; }
-.back-to-blog { display: inline-block; margin-bottom: 1rem; font-weight: 500; }
+.post-footer { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px dashed var(--hairline-strong); }
+.back-to-blog { display: inline-block; margin-bottom: 0.9rem; font-size: 0.9rem; color: var(--haze); }
+.back-to-blog:hover { color: var(--accent); }
 .post-nav { display: flex; justify-content: space-between; gap: 1rem; }
-.post-nav-prev, .post-nav-next { font-size: 0.9rem; color: #2563EB; }
+.post-nav-prev, .post-nav-next { font-size: 0.85rem; max-width: 48%; }
 
-/* ---------------------------------------------------------------------------
-   ADDITION: Projects page
-----------------------------------------------------------------------------*/
-.projects-list { display: flex; flex-direction: column; gap: 1.25rem; }
+/*--------------------------------------------------------------------------
+  Projects
+--------------------------------------------------------------------------*/
+.projects-list { display: flex; flex-direction: column; gap: 1.1rem; }
 .project-card {
-  padding: 1.5rem;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  transition: box-shadow 0.2s;
+  padding: 1.4rem 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.project-card:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
-.project-title {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 1.15rem;
-  margin-bottom: 0.35rem;
-}
-.project-title a { color: #1a1a2e; }
-.project-title a:hover { color: #2563EB; }
-.project-description { font-size: 0.95rem; color: #6b7280; margin-bottom: 0.75rem; }
-.project-links { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+.project-card:hover { transform: translateY(-2px); box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05); }
+.project-title { font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 0.4rem; }
+.project-title a { color: var(--ink); }
+.project-title a:hover { color: var(--accent); }
+.project-description { font-size: 0.92rem; color: var(--haze); margin-bottom: 0.8rem; }
+.project-links { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
 
-/* ---------------------------------------------------------------------------
-   ADDITION: 404 page
-----------------------------------------------------------------------------*/
-.notfound { text-align: center; padding: 4rem 0; }
-.notfound p { color: #6b7280; }
+/*--------------------------------------------------------------------------
+  404
+--------------------------------------------------------------------------*/
+.notfound { text-align: center; padding: 5rem 0 6rem; }
+.notfound p { color: var(--haze); }
 
-/* ---------------------------------------------------------------------------
-   Syntax highlighting (GitHub-style, matches the reference)
-----------------------------------------------------------------------------*/
-.highlight .c, .highlight .c1, .highlight .cm { color: #6a737d; font-style: italic; }
-.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt { color: #d73a49; }
-.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .sh, .highlight .sx { color: #032f62; }
-.highlight .na { color: #6f42c1; }
-.highlight .nb { color: #005cc5; }
-.highlight .nc { color: #6f42c1; }
-.highlight .nf, .highlight .nx { color: #6f42c1; }
-.highlight .no { color: #005cc5; }
-.highlight .ni { color: #24292e; font-weight: bold; }
-.highlight .nn { color: #005cc5; }
-.highlight .o, .highlight .ow { color: #d73a49; }
-.highlight .p { color: #24292e; }
-.highlight .mi, .highlight .mf, .highlight .mh, .highlight .mo { color: #005cc5; }
-.highlight .gh { color: #005cc5; font-weight: bold; }
-.highlight .gi { color: #22863a; background: #f0fff4; }
-.highlight .gd { color: #b31d28; background: #ffeef0; }
-.highlight .ge { font-style: italic; }
-.highlight .gs { font-weight: bold; }
-.highlight .err { color: #b31d28; }
+/*--------------------------------------------------------------------------
+  Syntax highlighting (tuned for paper background)
+--------------------------------------------------------------------------*/
+.highlight .c, .highlight .c1, .highlight .cm { color: #8b8887; font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt { color: #a35d6a; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .sh, .highlight .sx { color: #5c6e5a; }
+.highlight .na { color: #8a6a4f; }
+.highlight .nb { color: #55628d; }
+.highlight .nc { color: #8a6a4f; }
+.highlight .nf, .highlight .nx { color: #8a6a4f; }
+.highlight .no { color: #55628d; }
+.highlight .nn { color: #55628d; }
+.highlight .o { color: #57534e; }
+.highlight .mi, .highlight .mf { color: #7a5b3a; }
 
-/* ---------------------------------------------------------------------------
-   Responsive
-----------------------------------------------------------------------------*/
-@media screen and (max-width: 1024px) {
-  .home-container { grid-template-columns: 220px 1fr; gap: 2rem; }
-}
-
-@media screen and (max-width: 768px) {
-  .home-container { grid-template-columns: 1fr; gap: 1.5rem; }
-  .home-sidebar { position: static; display: flex; flex-direction: column; align-items: center; }
-  .avatar { width: 140px; height: 140px; }
+/*--------------------------------------------------------------------------
+  Responsive
+--------------------------------------------------------------------------*/
+@media (max-width: 768px) {
   .nav-hamburger { display: flex; }
   .nav-links {
     position: absolute;
     top: 60px; left: 0; right: 0;
-    background: #fff;
+    background: var(--paper);
     flex-direction: column;
+    align-items: stretch;
     gap: 0;
     padding: 0;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--hairline);
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
   }
-  .nav-links li { border-bottom: 1px solid #e5e7eb; }
-  .nav-links a { display: block; padding: 0.75rem 1.5rem; border-bottom: none; }
-  /* ADDITION: 7 nav items need more than the reference's 300px */
-  .nav-toggle:checked ~ .nav-links { max-height: 420px; }
+  .nav-toggle:checked ~ .nav-links { max-height: 460px; }
+  .nav-links > li { border-bottom: 1px solid var(--hairline); }
+  .nav-links > li > a, .nav-links .nav-external a { display: block; padding: 0.8rem 1.5rem; }
+  .nav-links .nav-external { display: contents; }
+  .nav-links .nav-theme { padding: 0.6rem 1.5rem; border-bottom: 1px solid var(--hairline); }
   .nav-toggle:checked ~ .nav-hamburger span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
   .nav-toggle:checked ~ .nav-hamburger span:nth-child(2) { opacity: 0; }
   .nav-toggle:checked ~ .nav-hamburger span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-  /* ADDITION: flatten the external-links wrapper so its items stack like the others */
-  .nav-external { display: contents; }
+  .hero { min-height: calc(100vh - 60px); }
+  .hero-greeting { font-size: 1.7rem; }
+  .hero-avatar { width: 88px; height: 88px; }
+  .hero-stats { gap: 1.5rem; }
   .post-title { font-size: 1.5rem; }
-  .post-meta { flex-wrap: wrap; gap: 0.5rem; }
   .post-nav { flex-direction: column; }
 }
 
-@media screen and (max-width: 480px) {
+@media (max-width: 480px) {
   body { font-size: 15px; }
-  .page-container,
-  .post-container,
-  .publications-container,
-  .blog-container { padding: 1.5rem 1rem; }
-  .pub-title { font-size: 0.95rem; }
-  .blog-tags { gap: 0.35rem; }
+  .page-container, .post-container, .blog-container { padding-left: 1rem; padding-right: 1rem; }
 }
 ```
 
 - [ ] **Step 2: Build and verify the stylesheet compiles**
 
-Run: `bundle exec jekyll build && head -5 _site/assets/css/style.css`
-Expected: exit 0; the compiled file starts with the converted CSS (not empty). No `Error: Invalid CSS` output.
+Run: `bundle exec jekyll build && head -5 _site/assets/css/style.css && grep -c 'data-theme="dark"' _site/assets/css/style.css`
+Expected: exit 0; compiled CSS present and contains the dark-theme selector (`2` occurrences or more — variable block + any usage).
 
 - [ ] **Step 3: Commit**
 
 ```bash
 git add assets/css/style.scss
-git commit -m "feat: site stylesheet adapted from reference theme
+git commit -m "feat: yohaku-style site stylesheet with dark mode
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
 
-### Task 4: Home page — sidebar, experience lists, placeholder images
+### Task 4: Home page — hero, timeline, experience lists, placeholder images
 
 **Files:**
 - Create: `_layouts/home.html`
 - Create: `_includes/experience-list.html`
+- Create: `_includes/timeline-item.html`
 - Create: `_data/education.yml`
 - Create: `_data/experience.yml`
 - Create: `img/photo.svg`
@@ -812,36 +1016,92 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 - [ ] **Step 1: Write `_layouts/home.html`**
 
+Computes stats at build time: post count, total words (200 wpm reading words summed), years since `site.site_since`, latest 5 posts for the timeline. Hero fields come from `_config.yml` (`hero_tagline`, `hero_keywords`, `site_since`).
+
 ```html
 ---
 layout: default
 ---
-<div class="home-container">
-  <aside class="home-sidebar">
-    <img src="{{ site.avatar }}" alt="{{ site.author }}" class="avatar">
-    <h1 class="home-name">{{ site.author }}</h1>
-    <p class="home-affiliation">{{ site.affiliation }}</p>
-    {% include social-links.html %}
-  </aside>
-  <div class="home-content">
-    {{ content }}
+{% assign total_words = 0 %}
+{% for post in site.posts %}
+  {% assign total_words = total_words | plus: post.content | strip_html | number_of_words %}
+{% endfor %}
+{% assign years_active = site.time | date: '%Y' | minus: site.site_since %}
 
-    {% if site.data.education and site.data.education != empty %}
-    <h2 id="education">Education</h2>
-    {% include experience-list.html items=site.data.education %}
-    {% endif %}
-
-    {% if site.data.experience and site.data.experience != empty %}
-    <h2 id="experience">Experience</h2>
-    {% include experience-list.html items=site.data.experience %}
-    {% endif %}
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <img src="{{ site.avatar }}" alt="{{ site.author }}" class="hero-avatar">
+  <h1 class="hero-greeting">
+    <span style="font-weight: 300;">Hi, I'm </span><span class="hero-name">{{ site.author }}</span><span class="wave"> 👋</span>
+  </h1>
+  <p class="hero-tagline">{{ site.hero_tagline }}</p>
+  <div class="hero-keywords">
+    {% for kw in site.hero_keywords %}
+    <span class="hero-keyword">{{ kw }}</span>
+    {% endfor %}
   </div>
+  <div class="hero-stats">
+    <span><strong>{{ site.posts | size }}</strong> posts</span>
+    <span><strong>{{ total_words | divided_by: 1000 }}k</strong> words</span>
+    <span><strong>{{ years_active }}</strong> years writing</span>
+  </div>
+  {% include social-links.html %}
+</section>
+
+<div class="home-body">
+  {{ content }}
+
+  {% if site.posts != empty %}
+  <section class="home-section">
+    <h2 class="home-section-title">Recent Writing</h2>
+    <div class="timeline-list">
+      {% assign recent = site.posts | sort: date | reverse %}
+      {% for post in recent limit: 5 %}
+      {% assign idx = forloop.index | prepend: '0' %}
+      <div class="timeline-item">
+        <span class="timeline-index">{{ idx | slice: -2, 2 }}</span>
+        <div class="timeline-meta">
+          <span>{{ post.date | date: '%b %-d, %Y' }}</span>
+          {% if post.category %}<span>·</span><span>{{ post.category }}</span>{% endif %}
+        </div>
+        <a href="{{ post.url | relative_url }}">
+          <h3 class="timeline-title {% if forloop.first %}timeline-title-large{% endif %}">{{ post.title }}</h3>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if site.data.education and site.data.education != empty %}
+  <section class="home-section">
+    <h2 class="home-section-title">Education</h2>
+    {% include experience-list.html items=site.data.education %}
+  </section>
+  {% endif %}
+
+  {% if site.data.experience and site.data.experience != empty %}
+  <section class="home-section">
+    <h2 class="home-section-title">Experience</h2>
+    {% include experience-list.html items=site.data.experience %}
+  </section>
+  {% endif %}
 </div>
 ```
 
-- [ ] **Step 2: Write `_includes/experience-list.html`**
+Note on the Liquid: `{% assign total_words = total_words | plus: post.content | strip_html | number_of_words %}` — filter order matters here and evaluates right-to-left in Liquid chains; this construct is unreliable across Jekyll versions. Since Task 6 adds posts, verify at Step 7 that `_site/index.html` contains a non-`0k` words figure; if it renders `0k` with posts present, replace with per-post capture:
 
-Renders a vertical list of `experience-item` rows. Parameters: `items` (a `_data` array). Fields per item: `title`, `subtitle`, `org` (optional), `dates`, `logo` (optional). Renders nothing when `items` is empty or nil.
+```liquid
+{% assign total_words = 0 %}
+{% for post in site.posts %}
+  {% assign w = post.content | strip_html | number_of_words %}
+  {% assign total_words = total_words | plus: w %}
+{% endfor %}
+```
+
+(This per-post form is the correct fallback; use it directly if the first build already misses it.)
+
+- [ ] **Step 2: Write `_includes/experience-list.html`**
 
 ```html
 {% if include.items and include.items != empty %}
@@ -873,9 +1133,9 @@ Renders a vertical list of `experience-item` rows. Parameters: `items` (a `_data
 # Education history, shown on Home and CV. Newest first.
 # Fields: title, subtitle, org (optional), dates, logo (optional, 48x48 friendly)
 - title: Placeholder University
-  subtitle: Ph.D. in Computer Science
+  subtitle: Ph.D. in Computer Science (prospective)
   org: Department of Computer Science
-  dates: 2024 – present
+  dates: 2027 – expected
   logo: /img/logos/university_a.svg
 
 - title: Another University
@@ -889,13 +1149,13 @@ Renders a vertical list of `experience-item` rows. Parameters: `items` (a `_data
 ```yaml
 # Work experience, shown on Home and CV. Newest first.
 # Same fields as education.yml
-- title: Company A
+- title: Placeholder Company A
   subtitle: Senior Backend Engineer
   org: Platform Engineering
   dates: 2023 – present
   logo: /img/logos/company_a.svg
 
-- title: Company B
+- title: Placeholder Company B
   subtitle: Backend Engineer
   org: Infrastructure
   dates: 2020 – 2023
@@ -904,13 +1164,13 @@ Renders a vertical list of `experience-item` rows. Parameters: `items` (a `_data
 
 - [ ] **Step 5: Write placeholder images**
 
-`img/photo.svg` (default avatar; replace by dropping `img/photo.jpg` and updating `avatar:` in `_config.yml`):
+`img/photo.svg`:
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
-  <circle cx="90" cy="90" r="88" fill="#dbeafe"/>
-  <circle cx="90" cy="90" r="88" fill="none" stroke="#93c5fd" stroke-width="4"/>
-  <text x="90" y="112" font-family="Georgia, 'Times New Roman', serif" font-size="60" font-weight="600" fill="#2563EB" text-anchor="middle">JK</text>
+  <circle cx="90" cy="90" r="88" fill="#f0efeb"/>
+  <circle cx="90" cy="90" r="87" fill="none" stroke="#e3e1db" stroke-width="2"/>
+  <text x="90" y="113" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="500" fill="#c56473" text-anchor="middle">JK</text>
 </svg>
 ```
 
@@ -918,18 +1178,16 @@ Renders a vertical list of `experience-item` rows. Parameters: `items` (a `_data
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-  <rect width="48" height="48" rx="8" fill="#eff6ff"/>
-  <text x="24" y="31" font-family="Inter, -apple-system, sans-serif" font-size="17" font-weight="600" fill="#2563EB" text-anchor="middle">PU</text>
+  <rect width="48" height="48" rx="10" fill="#f0efeb"/>
+  <text x="24" y="31" font-family="Georgia, serif" font-size="18" font-weight="500" fill="#57534e" text-anchor="middle">PU</text>
 </svg>
 ```
 
-`img/logos/university_b.svg`: same content but initials text `AU`.
+`img/logos/university_b.svg`: same but initials `AU`.
+`img/logos/company_a.svg`: same but initials `CA`, text `fill="#c56473"`.
+`img/logos/company_b.svg`: same as company_a but initials `CB`.
 
-`img/logos/company_a.svg`: same content but initials text `CA` and `fill="#64748b"` for the text and `fill="#f8fafc"` for the rect.
-
-`img/logos/company_b.svg`: same as company_a but initials text `CB`.
-
-- [ ] **Step 6: Replace `index.md` with the real home content**
+- [ ] **Step 6: Replace `index.md`**
 
 ```markdown
 ---
@@ -937,14 +1195,15 @@ layout: home
 ---
 ## Research Interests
 
-Replace this section with 2–3 paragraphs describing what you work on. Name the
-areas you care about, why they matter, and what you are currently exploring.
-Keep it concrete and specific — this is the first thing visitors read about you.
+Replace this section with 2–3 paragraphs describing what you work on and what
+you want to study in a Ph.D. program. Name the areas, the questions that drive
+you, and what you have built or explored so far. Keep it specific — admissions
+readers skim hundreds of these.
 
 ## News
 
-- **2026** — Placeholder news item: the site was rebuilt.
-- **2024** — Placeholder news item: joined Placeholder University.
+- **2026** — Placeholder: this site was rebuilt.
+- **2026** — Placeholder: preparing Ph.D. applications for Fall 2027.
 
 ## Contact
 
@@ -956,20 +1215,17 @@ Email: your-email@example.com
 Run: `bundle exec jekyll build`
 Expected: exit 0.
 
-Run: `grep -c 'class="experience-item"' _site/index.html`
-Expected: `4` (two education + two experience rows).
-
-Run: `grep -c 'home-sidebar' _site/index.html && grep -c 'Research Interests' _site/index.html`
+Run: `grep -c 'hero-greeting' _site/index.html && grep -c 'hero-name' _site/index.html`
 Expected: both ≥ 1.
 
-Run: `ls _site/img/logos/`
-Expected: `company_a.svg  company_b.svg  university_a.svg  university_b.svg`.
+Run: `grep -c 'class="experience-item"' _site/index.html`
+Expected: `4` (2 education + 2 experience).
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add _layouts/home.html _includes/experience-list.html _data index.md img
-git commit -m "feat: home page with sidebar and CV sections
+git add _layouts/home.html _includes index.md _data img
+git commit -m "feat: home page with hero and timeline sections
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
@@ -986,7 +1242,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 - [ ] **Step 1: Write `_data/publications.yml`**
 
-Grouping rule used by the page: an entry with `venue: "Preprint"` goes into the **Manuscript** section; every other entry **must** have a `year` and is grouped by year descending.
+Grouping rule: an entry with `venue: "Preprint"` goes into **Manuscript**; every other entry must have `year` and is grouped by year descending.
 
 ```yaml
 # Publications. Fields:
@@ -994,7 +1250,7 @@ Grouping rule used by the page: an entry with `venue: "Preprint"` goes into the 
 #   authors  — list; the entry matching site.author (in _config.yml) is bolded
 #   venue    — string; use exactly "Preprint" to place the entry under Manuscript
 #   year     — integer, required for non-preprints
-#   award    — optional string, shown as a red badge next to the venue
+#   award    — optional string, shown as a badge next to the venue
 #   tags     — list of topics; drives the filter pills
 #   pdf      — optional URL; makes the title a link
 #   links    — optional list of {label, url} rendered as outline buttons
@@ -1029,8 +1285,7 @@ Grouping rule used by the page: an entry with `venue: "Preprint"` goes into the 
   pdf: https://arxiv.org
   abstract: >
     Second placeholder abstract. This entry demonstrates a year-grouped
-    publication with an award badge. Keep entries within a year in the order
-    you want them displayed.
+    publication with an award badge.
 
 - title: "A Third Placeholder Paper"
   authors:
@@ -1045,8 +1300,6 @@ Grouping rule used by the page: an entry with `venue: "Preprint"` goes into the 
 ```
 
 - [ ] **Step 2: Write `_includes/pub-card.html`**
-
-Parameter: `pub` (one entry from `publications.yml`).
 
 ```html
 <div class="pub-card" data-tags="{{ pub.tags | join: ',' }}">
@@ -1084,7 +1337,7 @@ Parameter: `pub` (one entry from `publications.yml`).
     </div>
     {% if pub.tags and pub.tags != empty %}
     <div class="pub-tags">
-      {% for t in pub.tags %}<span class="pub-tag">{{ t }}</span>{% endfor %}
+      {% for t in pub.tags %}<span class="tag-chip">{{ t }}</span>{% endfor %}
     </div>
     {% endif %}
   </div>
@@ -1096,6 +1349,8 @@ Parameter: `pub` (one entry from `publications.yml`).
 </div>
 ```
 
+(The Liquid in this card is exact — `{{ pub.award }}`, not `pub.away` — verified by the Step 5 grep for `pub-award`.)
+
 - [ ] **Step 3: Write `publications.md`**
 
 ```markdown
@@ -1104,13 +1359,10 @@ layout: default
 title: Publications
 permalink: /publications/
 ---
-<div class="publications-container">
+<div class="page-container">
+  <div class="page-label">Research</div>
   <h1 class="page-title">Publications</h1>
 
-  {% comment %}
-    Collect the unique set of topic tags across all publications,
-    alphabetize them, and render the filter pills.
-  {% endcomment %}
   {% assign topics = '' | split: '' %}
   {% for p in site.data.publications %}
     {% for t in p.tags %}
@@ -1120,15 +1372,14 @@ permalink: /publications/
   {% assign topics = topics | uniq | sort %}
 
   {% if topics != empty %}
-  <div class="pub-filters">
-    <button class="pub-filter-pill active" data-tag="all">All</button>
+  <div class="filter-bar">
+    <button class="filter-pill active" data-tag="all">All</button>
     {% for t in topics %}
-    <button class="pub-filter-pill" data-tag="{{ t }}">{{ t }}</button>
+    <button class="filter-pill" data-tag="{{ t }}">{{ t }}</button>
     {% endfor %}
   </div>
   {% endif %}
 
-  {% comment %}Manuscripts: entries whose venue is exactly "Preprint".{% endcomment %}
   {% assign pubs = site.data.publications %}
   {% assign manuscripts = pubs | where: "venue", "Preprint" %}
   {% assign published = pubs | where_exp: "p", "p.venue != 'Preprint'" %}
@@ -1142,7 +1393,6 @@ permalink: /publications/
   </section>
   {% endif %}
 
-  {% comment %}Year sections, newest first.{% endcomment %}
   {% assign years = '' | split: '' %}
   {% for p in published %}
     {% assign years = years | push: p.year %}
@@ -1166,31 +1416,26 @@ permalink: /publications/
 
 ```javascript
 document.addEventListener('DOMContentLoaded', function () {
-  // Abstract expand/collapse
   var toggles = document.querySelectorAll('.pub-abstract-toggle');
   toggles.forEach(function (btn) {
     btn.addEventListener('click', function () {
       var card = this.closest('.pub-card');
       var details = card.querySelector('.pub-details');
       var isExpanded = this.getAttribute('aria-expanded') === 'true';
-
       this.setAttribute('aria-expanded', !isExpanded);
       details.setAttribute('aria-hidden', isExpanded);
     });
   });
 
-  // Tag filtering
-  var pills = document.querySelectorAll('.pub-filter-pill');
+  var pills = document.querySelectorAll('.filter-pill');
   var cards = document.querySelectorAll('.pub-card');
   var yearSections = document.querySelectorAll('.pub-year-section');
 
   pills.forEach(function (pill) {
     pill.addEventListener('click', function () {
       var tag = this.getAttribute('data-tag');
-
       pills.forEach(function (p) { p.classList.remove('active'); });
       this.classList.add('active');
-
       cards.forEach(function (card) {
         var cardTags = (card.getAttribute('data-tags') || '').split(',');
         if (tag === 'all' || cardTags.indexOf(tag) !== -1) {
@@ -1199,8 +1444,6 @@ document.addEventListener('DOMContentLoaded', function () {
           card.style.display = 'none';
         }
       });
-
-      // Hide year sections that have no visible cards
       yearSections.forEach(function (section) {
         var visibleCards = section.querySelectorAll('.pub-card:not([style*="display: none"])');
         section.style.display = visibleCards.length > 0 ? '' : 'none';
@@ -1218,17 +1461,17 @@ Expected: exit 0.
 Run: `grep -c 'class="pub-card"' _site/publications/index.html`
 Expected: `3`.
 
-Run: `grep -c 'Manuscript' _site/publications/index.html && grep -c 'pub-year' _site/publications/index.html`
-Expected: both ≥ 1. Year headings render `2025` and `2024`.
-
-Run: `grep -c '<strong>Your Name</strong>' _site/publications/index.html`
-Expected: `3` (Your Name appears as an author in all 3 entries and is bolded in each).
-
-Run: `grep -c 'pub-award' _site/publications/index.html`
+Run: `grep -c '>Manuscript<' _site/publications/index.html`
 Expected: `1`.
 
-Run: `ls _site/assets/js/publications.js`
-Expected: the file exists.
+Run: `grep -cE '>2025<|>2024<' _site/publications/index.html`
+Expected: `2`.
+
+Run: `grep -c 'pub-award' _site/publications/index.html`
+Expected: `1` (award badge present and rendered; `0` means the award span is missing — check the `{% if pub.award %}` guard).
+
+Run: `test $(grep -c '{{ pub' _site/publications/index.html) -eq 0 && echo LIQUID-OK`
+Expected: `LIQUID-OK` (no unrendered Liquid leaked to HTML).
 
 - [ ] **Step 6: Commit**
 
@@ -1241,12 +1484,11 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 ---
 
-### Task 6: Blog — list layout with tag filter, post layout, sample posts
+### Task 6: Blog — timeline list, post layout, sample posts
 
 **Files:**
 - Create: `_layouts/blog-list.html`
 - Create: `_layouts/post.html`
-- Create: `_includes/post-card.html`
 - Create: `blog.md`
 - Create: `assets/js/blog-filter.js`
 - Create: `_posts/2026-10-20-hello-world.md`
@@ -1259,9 +1501,9 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 layout: default
 ---
 <div class="blog-container">
+  <div class="page-label">Blog</div>
   <h1 class="page-title">{{ page.title }}</h1>
 
-  {% comment %}Unique tag set across all posts, alphabetized.{% endcomment %}
   {% assign all_tags = '' | split: '' %}
   {% for post in site.posts %}
     {% for t in post.tags %}
@@ -1271,43 +1513,36 @@ layout: default
   {% assign all_tags = all_tags | uniq | sort %}
 
   {% if all_tags != empty %}
-  <div class="blog-tags">
-    <button class="tag-pill active" data-tag="all">All</button>
+  <div class="filter-bar">
+    <button class="filter-pill active" data-tag="all">All</button>
     {% for t in all_tags %}
-    <button class="tag-pill" data-tag="{{ t }}">{{ t }}</button>
+    <button class="filter-pill" data-tag="{{ t }}">{{ t }}</button>
     {% endfor %}
   </div>
   {% endif %}
 
-  {% for post in site.posts %}
-  {% include post-card.html post=post %}
-  {% endfor %}
+  <div class="timeline-list">
+    {% for post in site.posts %}
+    <div class="timeline-item blog-post-card" data-tags="{{ post.tags | join: ',' }}">
+      <span class="timeline-index">{{ forloop.index | prepend: '00' | slice: -2, 2 }}</span>
+      <div class="timeline-meta">
+        <span>{{ post.date | date: '%b %-d, %Y' }}</span>
+        {% if post.category %}<span>·</span><span>{{ post.category }}</span>{% endif %}
+        {% assign words = post.content | strip_html | number_of_words %}
+        {% assign minutes = words | divided_by: 200 | at_least: 1 %}
+        <span>·</span><span>{{ minutes }} min read</span>
+      </div>
+      <a href="{{ post.url | relative_url }}">
+        <h2 class="timeline-title {% if forloop.first %}timeline-title-large{% endif %}">{{ post.title }}</h2>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 <script src="{{ '/assets/js/blog-filter.js' | relative_url }}"></script>
 ```
 
-- [ ] **Step 2: Write `_includes/post-card.html`**
-
-Parameter: `post`.
-
-```html
-{% assign words = include.post.content | strip_html | number_of_words %}
-{% assign minutes = words | divided_by: 200 | at_least: 1 %}
-<div class="blog-post-card" data-tags="{{ include.post.tags | join: ',' }}">
-  <h2 class="blog-post-card-title">
-    <a href="{{ include.post.url | relative_url }}">{{ include.post.title }}</a>
-  </h2>
-  <div class="blog-post-card-meta">
-    <time datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: '%B %-d, %Y' }}</time>
-    <span class="post-reading-time">{{ minutes }} min read</span>
-  </div>
-  {% if include.post.excerpt %}
-  <p class="blog-post-card-excerpt">{{ include.post.excerpt | strip_html | truncate: 160 }}</p>
-  {% endif %}
-</div>
-```
-
-- [ ] **Step 3: Write `_layouts/post.html`**
+- [ ] **Step 2: Write `_layouts/post.html`**
 
 ```html
 ---
@@ -1316,6 +1551,7 @@ layout: default
 <div class="post-container">
   <article class="post-article">
     <header class="post-header">
+      <div class="page-label">{{ page.category | default: 'Writing' }}</div>
       <h1 class="post-title">{{ page.title }}</h1>
       <div class="post-meta">
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time>
@@ -1345,7 +1581,7 @@ layout: default
 </div>
 ```
 
-- [ ] **Step 4: Write `blog.md`**
+- [ ] **Step 3: Write `blog.md`**
 
 ```markdown
 ---
@@ -1355,20 +1591,18 @@ permalink: /blog/
 ---
 ```
 
-- [ ] **Step 5: Write `assets/js/blog-filter.js`**
+- [ ] **Step 4: Write `assets/js/blog-filter.js`**
 
 ```javascript
 document.addEventListener('DOMContentLoaded', function () {
-  var pills = document.querySelectorAll('.tag-pill');
+  var pills = document.querySelectorAll('.filter-pill');
   var cards = document.querySelectorAll('.blog-post-card');
 
   pills.forEach(function (pill) {
     pill.addEventListener('click', function () {
       var tag = this.getAttribute('data-tag');
-
       pills.forEach(function (p) { p.classList.remove('active'); });
       this.classList.add('active');
-
       cards.forEach(function (card) {
         var cardTags = (card.getAttribute('data-tags') || '').split(',');
         if (tag === 'all' || cardTags.indexOf(tag) !== -1) {
@@ -1382,7 +1616,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 ```
 
-- [ ] **Step 6: Write `_posts/2026-10-20-hello-world.md`**
+- [ ] **Step 5: Write `_posts/2026-10-20-hello-world.md`**
 
 ````markdown
 ---
@@ -1415,7 +1649,7 @@ optional badge on the post page, and `excerpt` is what the index card shows.
 Everything is optional except `title` and `date`.
 ````
 
-- [ ] **Step 7: Write `_posts/2026-10-24-code-blocks-example.md`**
+- [ ] **Step 6: Write `_posts/2026-10-24-code-blocks-example.md`**
 
 ````markdown
 ---
@@ -1428,14 +1662,10 @@ excerpt: "A placeholder post that exists only to demo headings, code blocks, tab
 
 ## A level-two heading
 
-A level-three heading works too.
-
 ### Level three
 
 Inline `code`, **bold**, *italic*, and [links](https://jekyllrb.com) behave as
 expected.
-
-### A code block
 
 ```python
 def greet(name: str) -> str:
@@ -1447,42 +1677,44 @@ for i in range(3):
     print(greet(f"world #{i}"))
 ```
 
-### A table
-
 | Column A | Column B |
 |----------|----------|
 | 1        | 2        |
 
-### A blockquote
-
 > Placeholder blockquote. Replace or delete this post before writing seriously.
 ````
 
-- [ ] **Step 8: Build and verify**
+- [ ] **Step 7: Build and verify**
 
 Run: `bundle exec jekyll build`
 Expected: exit 0.
 
-Run: `grep -c 'class="blog-post-card"' _site/blog/index.html`
+Run: `grep -c 'class="timeline-item blog-post-card"' _site/blog/index.html`
 Expected: `2`.
 
-Run: `grep -c 'tag-pill' _site/blog/index.html`
-Expected: ≥ 4 (All + demo + code + meta).
+Run: `grep -c 'filter-pill' _site/blog/index.html`
+Expected: `4` (All + demo + code + meta).
 
 Run: `ls _site/blog/2026/10/20/hello-world/`
 Expected: `index.html` exists.
 
-Run: `grep -c 'post-nav-prev' _site/blog/2026/10/20/hello-world/index.html && grep -c 'highlight' _site/blog/2026/10/24/code-blocks-example/index.html`
-Expected: both ≥ 1 (prev/next nav renders on the older post; python block is highlighted).
+Run: `grep -c 'highlight' _site/blog/2026/10/24/code-blocks-example/index.html`
+Expected: ≥ 1 (python block highlighted).
 
-Run: `ls _site/feed.xml && grep -c '<entry>' _site/feed.xml`
-Expected: feed.xml exists and contains 2 entries.
+Run: `grep -c 'Recent Writing' _site/index.html && grep -cE 'timeline-index' _site/index.html`
+Expected: `1` and `2` (home shows exactly 2 posts, being all posts so far, in the timeline).
 
-- [ ] **Step 9: Commit**
+Run: `grep -oE '[0-9]+k</strong> words' _site/index.html`
+Expected: a non-zero figure (e.g. `1k</strong> words`). If `0k`, apply the per-post `assign` fallback documented in Task 4 Step 1 and rebuild.
+
+Run: `grep -c '<entry>' _site/feed.xml`
+Expected: `2`.
+
+- [ ] **Step 8: Commit**
 
 ```bash
-git add _layouts/blog-list.html _layouts/post.html _includes/post-card.html blog.md assets/js/blog-filter.js _posts
-git commit -m "feat: blog with tag filter, reading time, and sample posts
+git add _layouts/blog-list.html _layouts/post.html blog.md assets/js/blog-filter.js _posts
+git commit -m "feat: blog with timeline list, tag filter, sample posts
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
@@ -1541,6 +1773,7 @@ title: Projects
 permalink: /projects/
 ---
 <div class="page-container">
+  <div class="page-label">Building</div>
   <h1 class="page-title">Projects</h1>
   <div class="projects-list">
     {% for p in site.data.projects %}
@@ -1555,7 +1788,7 @@ permalink: /projects/
       <p class="project-description">{{ p.description }}</p>
       {% if p.tags and p.tags != empty %}
       <div class="pub-tags">
-        {% for t in p.tags %}<span class="pub-tag">{{ t }}</span>{% endfor %}
+        {% for t in p.tags %}<span class="tag-chip">{{ t }}</span>{% endfor %}
       </div>
       {% endif %}
       {% if p.repo or p.demo %}
@@ -1576,7 +1809,7 @@ permalink: /projects/
 
 - [ ] **Step 3: Write `cv.md`**
 
-Note: headings inside the container are raw HTML `<h2>` on purpose — kramdown does not process markdown inside an HTML block.
+Headings inside the container are raw HTML `<h2>` on purpose — kramdown does not process markdown inside an HTML block.
 
 ```markdown
 ---
@@ -1585,10 +1818,11 @@ title: CV
 permalink: /cv/
 ---
 <div class="page-container">
+  <div class="page-label">Curriculum</div>
   <h1 class="page-title">CV</h1>
 
   <p><a class="pub-link" href="{{ '/assets/cv.pdf' | relative_url }}">Download CV (PDF)</a>
-  <em>(link is a placeholder — drop your <code>cv.pdf</code> into <code>assets/</code>)</em></p>
+  <em>(placeholder — drop your <code>cv.pdf</code> into <code>assets/</code>)</em></p>
 
   <h2>Education</h2>
   {% include experience-list.html items=site.data.education %}
@@ -1648,6 +1882,7 @@ layout: default
 permalink: /404.html
 ---
 <div class="page-container notfound">
+  <div class="page-label">Lost</div>
   <h1 class="page-title">404</h1>
   <p>The page you are looking for does not exist or has been moved.</p>
   <p><a href="{{ '/' | relative_url }}">&larr; Back to Home</a></p>
@@ -1659,23 +1894,33 @@ permalink: /404.html
 ````markdown
 # JasonkayZK.github.io
 
-English academic personal site, built with a hand-written Jekyll theme and
-served by GitHub Pages from this branch (`save`). Old blog backup lives in
-`__bak/` and is excluded from the build.
+English academic personal site (PhD-application oriented), built with a
+hand-written Jekyll theme — visual language ported from innei.in's Yohaku —
+and served by GitHub Pages from this branch (`save`). Old blog backup lives
+in `__bak/` and is excluded from the build. The Chinese and Japanese archives
+live at `/cn/` and `/jp/` (separate repos) and are linked from the nav.
 
 ## Run locally
 
 ```bash
-bundle install        # first time only
+bundle install        # first time only (see note below on macOS CLT)
 bundle exec jekyll serve
 # → http://127.0.0.1:4000
+```
+
+macOS note: if the `github-pages` gem's sassc native build fails with C++
+header errors, export these before `bundle install`:
+
+```bash
+export CPLUS_INCLUDE_PATH="$(xcrun --show-sdk-path)/usr/include/c++/v1:$(xcrun --show-sdk-path)/usr/include"
 ```
 
 ## Editing content (no HTML involved)
 
 | What | Where |
 |---|---|
-| Name, email, description, avatar, social links | `_config.yml` |
+| Name, email, tagline, keywords, avatar, social links | `_config.yml` |
+| Home hero stats (start year) | `_config.yml` → `site_since` |
 | Home page text (research interests, news, contact) | `index.md` |
 | Education / Experience rows | `_data/education.yml`, `_data/experience.yml` |
 | Publications | `_data/publications.yml` |
@@ -1683,6 +1928,7 @@ bundle exec jekyll serve
 | Blog posts | `_posts/YYYY-MM-DD-title.md` |
 | Avatar / institution logos | `img/photo.*`, `img/logos/` |
 | CV PDF | drop `assets/cv.pdf`, link already points there |
+| Colors / fonts / dark mode | `assets/css/style.scss` (CSS vars at top) |
 
 ### Add a blog post
 
@@ -1704,7 +1950,7 @@ Body in Markdown.
 
 Append to `_data/publications.yml` — copy an existing entry's shape. Use
 `venue: "Preprint"` to list it under **Manuscript**; otherwise set `year` and
-it is grouped by year automatically.
+it is grouped by year automatically. Filter pills are derived from `tags`.
 
 ### Logos & photo
 
@@ -1734,16 +1980,19 @@ Run: `rm -rf _site && bundle exec jekyll build`
 Expected: exit 0, `Generation done`.
 
 Run: `ls _site`
-Expected exactly: `404.html  assets  blog  cv  feed.xml  img  index.html  projects  publications` (order irrelevant; no `__bak`, no `docs`, no `README.html`).
+Expected: `404.html  assets  blog  cv  feed.xml  img  index.html  projects  publications` (order irrelevant; no `__bak`, no `docs`, no `README.html`).
 
 Run: `test ! -e _site/__bak && test ! -e _site/docs && test ! -e .github/workflows && echo CLEAN`
-Expected: `CLEAN` (backup and specs never render; no workflow file at repo root that could interfere).
-
-Run: `grep -c 'research-highlight\|home-affiliation' _site/index.html`
-Expected: ≥ 1.
+Expected: `CLEAN`.
 
 Run: `grep -o '<title>[^<]*</title>' _site/index.html _site/publications/index.html _site/blog/index.html _site/cv/index.html _site/projects/index.html`
-Expected: five titles, each ending in `| Your Name`.
+Expected: home is `Your Name`, the rest `X | Your Name`.
+
+Run: `test -f _site/assets/js/theme.js && test -f _site/assets/js/blog-filter.js && test -f _site/assets/js/publications.js && test -f _site/assets/css/style.css && echo ASSETS-OK`
+Expected: `ASSETS-OK`.
+
+Run: `grep -c 'data-theme' _site/index.html`
+Expected: ≥ 2 (inline switch script + html attribute usage).
 
 - [ ] **Step 4: Visual smoke test with the dev server**
 
@@ -1755,7 +2004,9 @@ for p in / /publications/ /blog/ /blog/2026/10/20/hello-world/ /projects/ /cv/ /
 done
 ```
 
-Expected: every line `200`. Stop the server afterwards. (Interactive check: open http://127.0.0.1:4000 in a browser and confirm the layout matches the reference site: fixed nav with 中文站/日文站 links, sidebar avatar, blue accent `#2563EB`, publication filter pills, abstract toggles, blog tag pills, mobile hamburger at narrow width.)
+Expected: every line `200`. Stop the server afterwards.
+
+Interactive check for the user (or implementer with a headless browser if available): open http://127.0.0.1:4000 — warm paper background, rose accent, serif hero with glow, dark-mode toggle in nav works and persists across reloads, publications filter + abstract toggle work, blog tag filter works, mobile-width nav collapses to hamburger.
 
 - [ ] **Step 5: Commit**
 
@@ -1772,5 +2023,5 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 
 1. `git push origin save`
 2. GitHub → `JasonkayZK/JasonkayZK.github.io` → **Settings → Pages** → Source: *Deploy from a branch* → Branch: `save` / `(root)` → Save.
-3. Wait for the Pages workflow to finish; verify `https://jasonkayzk.github.io/` serves the new site.
+3. Wait for the Pages build; verify `https://jasonkayzk.github.io/` serves the new site.
 4. Optional cleanup later: delete the `master` branch (old Hexo build archive) — ask the user first.
