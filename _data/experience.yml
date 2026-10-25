@@ -1,0 +1,13 @@
+# Work experience, shown on Home and CV. Newest first.
+# Same fields as education.yml
+- title: Placeholder Company A
+  subtitle: Senior Backend Engineer
+  org: Platform Engineering
+  dates: 2023 – present
+  logo: /img/logos/company_a.svg
+
+- title: Placeholder Company B
+  subtitle: Backend Engineer
+  org: Infrastructure
+  dates: 2020 – 2023
+  logo: /img/logos/company_b.svg

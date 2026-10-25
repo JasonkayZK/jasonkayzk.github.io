@@ -1,0 +1,21 @@
+{% if include.items and include.items != empty %}
+<div class="experience-list">
+  {% for item in include.items %}
+  <div class="experience-item">
+    {% if item.logo %}
+    <img src="{{ item.logo }}" alt="{{ item.title }}" class="experience-logo">
+    {% endif %}
+    <div class="experience-details">
+      <div class="experience-title">{{ item.title }}</div>
+      {% if item.subtitle %}
+      <div class="experience-subtitle">{{ item.subtitle }}</div>
+      {% endif %}
+      {% if item.org %}
+      <div class="experience-org">{{ item.org }}</div>
+      {% endif %}
+      <div class="experience-date">{{ item.dates }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

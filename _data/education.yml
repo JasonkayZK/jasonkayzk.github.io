@@ -1,0 +1,12 @@
+# Education history, shown on Home and CV. Newest first.
+# Fields: title, subtitle, org (optional), dates, logo (optional, 48x48 friendly)
+- title: Placeholder University
+  subtitle: Ph.D. in Computer Science (prospective)
+  org: Department of Computer Science
+  dates: 2027 – expected
+  logo: /img/logos/university_a.svg
+
+- title: Another University
+  subtitle: B.S. in Software Engineering
+  dates: 2016 – 2020
+  logo: /img/logos/university_b.svg
