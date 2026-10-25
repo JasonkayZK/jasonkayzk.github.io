@@ -24,7 +24,12 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx hexo clean && npx hexo generate
+      - name: Build
+        run: |
+          npx hexo clean && npx hexo generate 2>&1 | tee /tmp/build.log
+          ! grep -q " ERROR " /tmp/build.log
+          test -f public/index.html
+          test -f public/feed.xml
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
