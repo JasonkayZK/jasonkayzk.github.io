@@ -9,7 +9,7 @@
     </h3>
     <p class="pub-authors">
       {%- for a in include.pub.authors -%}
-      {%- if a == site.author %}<strong>{{ a }}</strong>{% else %}{{ a }}{% endif -%}
+      {%- if a == site.author %}<strong>{{ a | escape }}</strong>{% else %}{{ a | escape }}{% endif -%}
       {%- unless forloop.last %}, {% endunless -%}
       {%- endfor -%}
     </p>
@@ -33,7 +33,7 @@
     </div>
     {% if include.pub.tags and include.pub.tags != empty %}
     <div class="pub-tags">
-      {% for t in include.pub.tags %}<span class="tag-chip">{{ t }}</span>{% endfor %}
+      {% for t in include.pub.tags %}<span class="tag-chip">{{ t | escape }}</span>{% endfor %}
     </div>
     {% endif %}
   </div>
