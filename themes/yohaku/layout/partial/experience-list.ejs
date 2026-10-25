@@ -1,0 +1,21 @@
+<% if (typeof items !== 'undefined' && items && items.length) { %>
+<div class="experience-list">
+  <% items.forEach(function (item) { %>
+  <div class="experience-item">
+    <% if (item.logo) { %>
+    <img src="<%- url_for(item.logo) %>" alt="<%= item.title %>" class="experience-logo">
+    <% } %>
+    <div class="experience-details">
+      <div class="experience-title"><%= item.title %></div>
+      <% if (item.subtitle) { %>
+      <div class="experience-subtitle"><%= item.subtitle %></div>
+      <% } %>
+      <% if (item.org) { %>
+      <div class="experience-org"><%= item.org %></div>
+      <% } %>
+      <div class="experience-date"><%= item.dates %></div>
+    </div>
+  </div>
+  <% }); %>
+</div>
+<% } %>

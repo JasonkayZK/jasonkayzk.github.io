@@ -1,0 +1,42 @@
+<%
+  var tags = [];
+  site.posts.each(function (p) {
+    p.tags.each(function (t) {
+      if (tags.indexOf(t.name) === -1) tags.push(t.name);
+    });
+  });
+  tags.sort();
+  var posts = site.posts.sort('-date').toArray();
+%>
+<div class="blog-container">
+  <div class="page-label">Blog</div>
+  <h1 class="page-title"><%= page.title %></h1>
+
+  <% if (tags.length) { %>
+  <div class="filter-bar">
+    <button class="filter-pill active" data-tag="all" aria-pressed="true">All</button>
+    <% tags.forEach(function (t) { %>
+    <button class="filter-pill" data-tag="<%= t %>" aria-pressed="false"><%= t %></button>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <div class="timeline-list">
+    <% posts.forEach(function (post, i) { %>
+    <div class="timeline-item blog-post-card" data-tags="<%= post.tags.map(function (t) { return t.name; }).join(',') %>">
+      <span class="timeline-index"><%= String(i + 1).padStart(2, '0') %></span>
+      <div class="timeline-meta">
+        <span><%= date(post.date, 'MMM D, YYYY') %></span>
+        <% if (post.categories && post.categories.length) { %><span>·</span><span><%= post.categories.first().name %></span><% } %>
+        <% var words = post.content.replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length; %>
+        <% var minutes = Math.max(1, Math.floor(words / 200)); %>
+        <span>·</span><span><%= minutes %> min read</span>
+      </div>
+      <a href="<%- url_for(post.path) %>">
+        <h2 class="timeline-title<%= i === 0 ? ' timeline-title-large' : '' %>"><%= post.title %></h2>
+      </a>
+    </div>
+    <% }); %>
+  </div>
+</div>
+<script src="<%- url_for('assets/js/blog-filter.js') %>"></script>

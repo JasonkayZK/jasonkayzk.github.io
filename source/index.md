@@ -1,6 +1,6 @@
 ---
-layout: home
 title: ""
+layout: home
 ---
 ## Research Interests
 

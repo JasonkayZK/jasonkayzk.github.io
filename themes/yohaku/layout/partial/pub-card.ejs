@@ -1,0 +1,44 @@
+<% if (typeof pub !== 'undefined' && pub) { %>
+<div class="pub-card" data-tags="<%= (pub.tags || []).join(',') %>">
+  <div class="pub-card-main">
+    <h3 class="pub-title">
+      <% if (pub.pdf) { %>
+      <a href="<%- pub.pdf %>" target="_blank" rel="noopener"><%= pub.title %></a>
+      <% } else { %>
+      <%= pub.title %>
+      <% } %>
+    </h3>
+    <p class="pub-authors">
+      <% (pub.authors || []).forEach(function (a, i) { %><% if (a === config.author) { %><strong><%= a %></strong><% } else { %><%= a %><% } %><% if (i < pub.authors.length - 1) { %>, <% } %><% }); %>
+    </p>
+    <p class="pub-venue">
+      <%= pub.venue %>
+      <% if (pub.award) { %><span class="pub-award"><%= pub.award %></span><% } %>
+    </p>
+    <div class="pub-actions">
+      <% if (pub.links && pub.links.length) { %>
+      <div class="pub-links">
+        <% pub.links.forEach(function (l) { %>
+        <a class="pub-link" href="<%- l.url %>" target="_blank" rel="noopener"><%= l.label %></a>
+        <% }); %>
+      </div>
+      <% } %>
+      <% if (pub.abstract) { %>
+      <button class="pub-abstract-toggle" aria-expanded="false">
+        Abstract <span class="pub-chevron">▾</span>
+      </button>
+      <% } %>
+    </div>
+    <% if (pub.tags && pub.tags.length) { %>
+    <div class="pub-tags">
+      <% pub.tags.forEach(function (t) { %><span class="tag-chip"><%= t %></span><% }); %>
+    </div>
+    <% } %>
+  </div>
+  <% if (pub.abstract) { %>
+  <div class="pub-details" aria-hidden="true">
+    <div class="pub-abstract"><%= pub.abstract %></div>
+  </div>
+  <% } %>
+</div>
+<% } %>

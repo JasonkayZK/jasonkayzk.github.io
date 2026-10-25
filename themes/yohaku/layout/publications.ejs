@@ -1,0 +1,50 @@
+<div class="page-container">
+  <div class="page-label">Research</div>
+  <h1 class="page-title"><%= page.title %></h1>
+
+  <%
+    var pubs = site.data.publications || [];
+    var topics = [];
+    pubs.forEach(function (p) {
+      (p.tags || []).forEach(function (t) {
+        if (topics.indexOf(t) === -1) topics.push(t);
+      });
+    });
+    topics.sort();
+    var manuscripts = pubs.filter(function (p) { return p.venue === 'Preprint'; });
+    var published = pubs.filter(function (p) { return p.venue !== 'Preprint'; });
+    var years = [];
+    published.forEach(function (p) {
+      if (years.indexOf(p.year) === -1) years.push(p.year);
+    });
+    years.sort(function (a, b) { return b - a; });
+  %>
+
+  <% if (topics.length) { %>
+  <div class="filter-bar">
+    <button class="filter-pill active" data-tag="all" aria-pressed="true">All</button>
+    <% topics.forEach(function (t) { %>
+    <button class="filter-pill" data-tag="<%= t %>" aria-pressed="false"><%= t %></button>
+    <% }); %>
+  </div>
+  <% } %>
+
+  <% if (manuscripts.length) { %>
+  <section class="pub-year-section">
+    <h2 class="pub-year">Manuscript</h2>
+    <% manuscripts.forEach(function (p) { %>
+    <%- partial('partial/pub-card', {pub: p}) %>
+    <% }); %>
+  </section>
+  <% } %>
+
+  <% years.forEach(function (y) { %>
+  <section class="pub-year-section">
+    <h2 class="pub-year"><%= y %></h2>
+    <% published.filter(function (p) { return p.year === y; }).forEach(function (p) { %>
+    <%- partial('partial/pub-card', {pub: p}) %>
+    <% }); %>
+  </section>
+  <% }); %>
+</div>
+<script src="<%- url_for('assets/js/publications.js') %>"></script>
