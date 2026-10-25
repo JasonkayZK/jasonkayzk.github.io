@@ -8,13 +8,13 @@
 %>
 <section class="hero">
   <div class="hero-glow" aria-hidden="true"></div>
-  <img src="<%- url_for(config.avatar) %>" alt="<%= config.author %>" class="hero-avatar">
+  <img src="<%- url_for(config.avatar || '/img/photo.svg') %>" alt="<%= config.author %>" class="hero-avatar">
   <h1 class="hero-greeting">
     <span class="hero-greeting-intro">Hi, I'm </span><span class="hero-name"><%= config.author %></span><span class="wave" aria-hidden="true"> 👋</span>
   </h1>
   <p class="hero-tagline"><%= config.hero_tagline %></p>
   <div class="hero-keywords">
-    <% config.hero_keywords.forEach(function (kw) { %>
+    <% (config.hero_keywords || []).forEach(function (kw) { %>
     <span class="hero-keyword"><%= kw %></span>
     <% }); %>
   </div>

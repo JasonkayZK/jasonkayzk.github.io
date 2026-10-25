@@ -15,9 +15,11 @@ npm run server     # → http://localhost:4000
 npm run build      # clean + generate into public/
 ```
 
-**Date rule (important):** always quote front-matter dates —
-`date: "2026-10-30 10:00:00 +08:00"` — unquoted dates shift by timezone
-between local builds and CI.
+**Date rule (important):** dates are Asia/Shanghai wall-clock — quote them and
+include the offset: `date: "2026-10-30 10:00:00 +08:00"`. All builds must run
+with `TZ=Asia/Shanghai` (CI already does; if you build from another timezone,
+prefix commands with `TZ=Asia/Shanghai`). Note: `hexo new` writes the current
+UTC time as the date — adjust it to Shanghai local time after creating a post.
 
 ## Editing content (no HTML involved)
 
@@ -29,6 +31,7 @@ between local builds and CI.
 | Education / Experience rows | `source/_data/education.yml`, `source/_data/experience.yml` |
 | Publications | `source/_data/publications.yml` |
 | Projects | `source/_data/projects.yml` |
+| CV skills / awards | `source/_data/cv.yml` |
 | Blog posts | `source/_posts/YYYY-MM-DD-title.md` |
 | Avatar / institution logos | `source/img/photo.*`, `source/img/logos/` |
 | CV PDF | drop `cv.pdf` into `themes/yohaku/source/assets/` |

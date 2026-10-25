@@ -13,12 +13,15 @@
 
   <h2>Skills</h2>
   <ul>
-    <li>Placeholder skill group one: language, language, framework</li>
-    <li>Placeholder skill group two: infrastructure, tooling</li>
+    <% ((site.data.cv || {}).skills || []).forEach(function (s) { %>
+    <li><%= s %></li>
+    <% }); %>
   </ul>
 
   <h2>Awards</h2>
   <ul>
-    <li>20XX — Placeholder award</li>
+    <% ((site.data.cv || {}).awards || []).forEach(function (s) { %>
+    <li><%= s %></li>
+    <% }); %>
   </ul>
 </div>

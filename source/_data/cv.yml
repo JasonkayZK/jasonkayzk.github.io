@@ -1,0 +1,11 @@
+# CV content beyond education/experience. Fields:
+#   skills      — list of strings (one bullet each)
+#   awards      — list of strings (one bullet each)
+# Education and experience rows live in education.yml / experience.yml.
+
+skills:
+  - "Placeholder skill group one: language, language, framework"
+  - "Placeholder skill group two: infrastructure, tooling"
+
+awards:
+  - "20XX — Placeholder award"
