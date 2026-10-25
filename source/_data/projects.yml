@@ -1,0 +1,31 @@
+# Project cards. Fields:
+#   name        — string
+#   description — one short paragraph
+#   tags        — list of tech tags
+#   repo        — optional URL to the source repository
+#   demo        — optional URL to a live demo
+
+- name: Placeholder Project Alpha
+  description: >
+    Replace this with a one-to-three sentence description of the project:
+    what problem it solves and what makes it interesting. Keep it short —
+    readers can follow the links for details.
+  tags: [Rust, CLI]
+  repo: https://github.com/JasonkayZK
+  demo:
+
+- name: Placeholder Project Beta
+  description: >
+    Second placeholder project. Demonstrates a card with a demo link and
+    without one, so you can see both states before filling in real projects.
+  tags: [LLM, Python]
+  repo: https://github.com/JasonkayZK
+  demo: https://example.com
+
+- name: Placeholder Project Gamma
+  description: >
+    Third placeholder project. Every field except name is optional; this card
+    shows the layout with only tags and no links at all.
+  tags: [Distributed Systems, Go]
+  repo:
+  demo:

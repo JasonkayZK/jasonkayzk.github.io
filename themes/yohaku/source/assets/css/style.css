@@ -605,6 +605,33 @@ strong { font-weight: 600; }
 .highlight .o { color: #57534e; }
 .highlight .mi, .highlight .mf { color: #7a5b3a; }
 
+/* Hexo highlight.js long-name tokens + figure/table resets */
+.highlight .keyword { color: #a35d6a; }
+.highlight .keyword.type { color: #a35d6a; }
+.highlight .string, .highlight .subst { color: #5c6e5a; }
+.highlight .comment { color: #8b8887; font-style: italic; }
+.highlight .built_in, .highlight .literal, .highlight .symbol { color: #55628d; }
+.highlight .title, .highlight .title.function { color: #8a6a4f; }
+.highlight .number { color: #7a5b3a; }
+.highlight .attr, .highlight .attribute { color: #8a6a4f; }
+.highlight .params { color: #57534e; }
+.highlight .tag, .highlight .name { color: #a35d6a; }
+.highlight .variable, .highlight .variable.language { color: #55628d; }
+.highlight .meta { color: #8b8887; }
+.highlight .regexp { color: #5c6e5a; }
+figure.highlight {
+  margin: 0 0 1.5em;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--neutral-2);
+  overflow-x: auto;
+}
+figure.highlight table { margin: 0; border: none; width: 100%; border-collapse: collapse; }
+figure.highlight td { border: none; padding: 0; background: none; }
+figure.highlight td.code { width: 100%; }
+figure.highlight pre { margin: 0; border: none; background: none; border-radius: 0; padding: 1em 1.25em; }
+figure.highlight .line { display: block; }
+
 /*--------------------------------------------------------------------------
   Responsive
 --------------------------------------------------------------------------*/

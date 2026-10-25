@@ -1,0 +1,24 @@
+<div class="page-container">
+  <div class="page-label">Curriculum</div>
+  <h1 class="page-title"><%= page.title %></h1>
+
+  <p><a class="pub-link" href="<%- url_for('assets/cv.pdf') %>">Download CV (PDF)</a>
+  <em>(placeholder — drop your <code>cv.pdf</code> into <code>themes/yohaku/source/assets/</code>)</em></p>
+
+  <h2>Education</h2>
+  <%- partial('partial/experience-list', {items: site.data.education}) %>
+
+  <h2>Experience</h2>
+  <%- partial('partial/experience-list', {items: site.data.experience}) %>
+
+  <h2>Skills</h2>
+  <ul>
+    <li>Placeholder skill group one: language, language, framework</li>
+    <li>Placeholder skill group two: infrastructure, tooling</li>
+  </ul>
+
+  <h2>Awards</h2>
+  <ul>
+    <li>20XX — Placeholder award</li>
+  </ul>
+</div>

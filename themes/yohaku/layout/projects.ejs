@@ -1,0 +1,38 @@
+<div class="page-container">
+  <div class="page-label">Building</div>
+  <h1 class="page-title"><%= page.title %></h1>
+  <div class="projects-list">
+    <%
+      var projects = site.data.projects || [];
+      projects.forEach(function (p) {
+    %>
+    <div class="project-card">
+      <h2 class="project-title">
+        <% if (p.repo) { %>
+        <a href="<%- p.repo %>" target="_blank" rel="noopener"><%= p.name %></a>
+        <% } else { %>
+        <%= p.name %>
+        <% } %>
+      </h2>
+      <p class="project-description"><%= p.description %></p>
+      <% if (p.tags && p.tags.length) { %>
+      <div class="pub-tags">
+        <% p.tags.forEach(function (t) { %><span class="tag-chip"><%= t %></span><% }); %>
+      </div>
+      <% } %>
+      <% if (p.repo || p.demo) { %>
+      <div class="project-links">
+        <% if (p.repo) { %>
+        <a class="pub-link" href="<%- p.repo %>" target="_blank" rel="noopener">GitHub</a>
+        <% } %>
+        <% if (p.demo) { %>
+        <a class="pub-link" href="<%- p.demo %>" target="_blank" rel="noopener">Demo</a>
+        <% } %>
+      </div>
+      <% } %>
+    </div>
+    <%
+      });
+    %>
+  </div>
+</div>
