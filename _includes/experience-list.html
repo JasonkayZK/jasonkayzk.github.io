@@ -3,17 +3,17 @@
   {% for item in include.items %}
   <div class="experience-item">
     {% if item.logo %}
-    <img src="{{ item.logo }}" alt="{{ item.title }}" class="experience-logo">
+    <img src="{{ item.logo | relative_url }}" alt="{{ item.title | escape }}" class="experience-logo">
     {% endif %}
     <div class="experience-details">
-      <div class="experience-title">{{ item.title }}</div>
+      <div class="experience-title">{{ item.title | escape }}</div>
       {% if item.subtitle %}
-      <div class="experience-subtitle">{{ item.subtitle }}</div>
+      <div class="experience-subtitle">{{ item.subtitle | escape }}</div>
       {% endif %}
       {% if item.org %}
-      <div class="experience-org">{{ item.org }}</div>
+      <div class="experience-org">{{ item.org | escape }}</div>
       {% endif %}
-      <div class="experience-date">{{ item.dates }}</div>
+      <div class="experience-date">{{ item.dates | escape }}</div>
     </div>
   </div>
   {% endfor %}

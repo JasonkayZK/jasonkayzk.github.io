@@ -10,14 +10,14 @@ layout: default
 
 <section class="hero">
   <div class="hero-glow" aria-hidden="true"></div>
-  <img src="{{ site.avatar }}" alt="{{ site.author }}" class="hero-avatar">
+  <img src="{{ site.avatar | relative_url }}" alt="{{ site.author | escape }}" class="hero-avatar">
   <h1 class="hero-greeting">
-    <span style="font-weight: 300;">Hi, I'm </span><span class="hero-name">{{ site.author }}</span><span class="wave"> 👋</span>
+    <span class="hero-greeting-intro">Hi, I'm </span><span class="hero-name">{{ site.author | escape }}</span><span class="wave" aria-hidden="true"> 👋</span>
   </h1>
-  <p class="hero-tagline">{{ site.hero_tagline }}</p>
+  <p class="hero-tagline">{{ site.hero_tagline | escape }}</p>
   <div class="hero-keywords">
     {% for kw in site.hero_keywords %}
-    <span class="hero-keyword">{{ kw }}</span>
+    <span class="hero-keyword">{{ kw | escape }}</span>
     {% endfor %}
   </div>
   <div class="hero-stats">
@@ -35,16 +35,15 @@ layout: default
   <section class="home-section">
     <h2 class="home-section-title">Recent Writing</h2>
     <div class="timeline-list">
-      {% assign recent = site.posts | sort: date | reverse %}
-      {% for post in recent limit: 5 %}
+      {% for post in site.posts limit: 5 %}
       <div class="timeline-item">
-        <span class="timeline-index">{{ forloop.index | prepend: '00' | slice: -2, 2 }}</span>
+        <span class="timeline-index">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
         <div class="timeline-meta">
           <span>{{ post.date | date: '%b %-d, %Y' }}</span>
-          {% if post.category %}<span>·</span><span>{{ post.category }}</span>{% endif %}
+          {% if post.categories %}<span>·</span><span>{{ post.categories | first }}</span>{% endif %}
         </div>
         <a href="{{ post.url | relative_url }}">
-          <h3 class="timeline-title {% if forloop.first %}timeline-title-large{% endif %}">{{ post.title }}</h3>
+          <h3 class="timeline-title {% if forloop.first %}timeline-title-large{% endif %}">{{ post.title | escape }}</h3>
         </a>
       </div>
       {% endfor %}
