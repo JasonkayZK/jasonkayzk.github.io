@@ -1,0 +1,44 @@
+# Site settings — replace the placeholder values with your own.
+title: Your Name
+author: Your Name
+email: your-email@example.com
+description: >-
+  Personal website of Your Name — software engineer and aspiring researcher.
+  Replace this description in _config.yml.
+affiliation: "Aspiring Ph.D. Student"
+hero_tagline: "I turn curiosity into systems"
+hero_keywords: [LLM, Systems, RL]
+site_since: 2019
+avatar: "/img/photo.svg"
+
+# Social links shown on the home hero (leave a value empty to hide the icon)
+github_username: "JasonkayZK"
+scholar_url: "https://scholar.google.com"
+twitter_username: ""
+
+# Blog
+permalink: /blog/:year/:month/:day/:title/
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+
+# Never render these as site content
+exclude:
+  - __bak
+  - docs
+  - .github
+  - .gitignore
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - .DS_Store
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
