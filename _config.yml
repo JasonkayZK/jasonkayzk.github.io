@@ -16,32 +16,51 @@ github_username: "JasonkayZK"
 scholar_url: "https://scholar.google.com"
 twitter_username:
 
-# Blog
-permalink: /blog/:year/:month/:day/:title/
+language: en
+timezone: 'Asia/Shanghai'
 
-# Build settings
-# Hand-written theme — no theme gem. Explicitly null so the github-pages gem
-# does not silently default to jekyll-theme-primer.
-theme: null
-markdown: kramdown
-plugins:
-  - jekyll-feed
+# URL
+url: https://jasonkayzk.github.io
+permalink: blog/:year/:month/:day/:title/
+pretty_urls:
+  trailing_index: false
 
-# Never render these as site content
-exclude:
-  - __bak
-  - docs
-  - .github
-  - .gitignore
-  - README.md
-  - Gemfile
-  - Gemfile.lock
-  - vendor
-  - .DS_Store
+# Directory
+source_dir: source
+public_dir: public
+new_post_name: :year-:month-:day-:title.md
+default_layout: post
 
-defaults:
-  - scope:
-      path: ""
-      type: posts
-    values:
-      layout: post
+# Writing
+meta_generator: false
+external_link:
+  enable: false
+
+# Highlight
+syntax_highlighter: highlight.js
+highlight:
+  line_number: false
+  auto_detect: false
+  wrap: true
+  hljs: false
+
+# Markdown (kramdown-parity behavior)
+marked:
+  breaks: false
+  smartypants: false
+  autolink: false
+  mangle: false
+  headerIds: true
+  modifyAnchors: 1
+  prependRoot: false
+
+# Theme
+theme: yohaku
+
+# RSS
+feed:
+  type: atom
+  path: feed.xml
+  limit: 20
+  content: true
+  autodiscovery: true

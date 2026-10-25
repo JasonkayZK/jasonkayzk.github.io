@@ -1,6 +1,6 @@
 ---
 title: "Code Blocks Look Like This"
-date: 2026-10-24 21:30:00 +08:00
+date: "2026-10-24 21:30:00 +08:00"
 tags: [demo, code]
 category: technical
 excerpt: "A placeholder post that exists only to demo headings, code blocks, tables, and blockquotes."

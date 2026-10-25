@@ -1,0 +1,21 @@
+{
+  "name": "jasonkayzk-github-io",
+  "version": "1.0.0",
+  "private": true,
+  "hexo": {
+    "version": "8.1.2"
+  },
+  "scripts": {
+    "build": "hexo clean && hexo generate",
+    "server": "hexo server"
+  },
+  "dependencies": {
+    "hexo": "^8.1.2",
+    "hexo-generator-feed": "^4.0.0",
+    "hexo-renderer-ejs": "^2.0.0",
+    "hexo-renderer-marked": "^7.0.1"
+  },
+  "devDependencies": {
+    "hexo-server": "^3.0.0"
+  }
+}

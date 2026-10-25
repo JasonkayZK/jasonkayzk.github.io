@@ -1,6 +1,6 @@
 ---
 title: "Hello, World"
-date: 2026-10-20 09:00:00 +08:00
+date: "2026-10-20 09:00:00 +08:00"
 tags: [meta]
 category: essay
 excerpt: "A placeholder first post explaining how posts on this site are written and organized."
