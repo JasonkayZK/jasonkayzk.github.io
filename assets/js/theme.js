@@ -16,7 +16,11 @@
       }
     } catch (err) { /* ignore */ }
   };
-  if (mq.addEventListener) mq.addEventListener('change', onChange);
+  if (mq.addEventListener) {
+    mq.addEventListener('change', onChange);
+  } else if (mq.addListener) {
+    mq.addListener(onChange); // Safari < 14
+  }
 
   btn.addEventListener('click', function () {
     var next = current() === 'dark' ? 'light' : 'dark';
