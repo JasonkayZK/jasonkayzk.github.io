@@ -1,123 +1,126 @@
 # Academic Blog Rebuild — Design
 
-**Date:** 2026-10-25 (revised 2026-10-25 PM — visual direction switched from jinyansu1.github.io to innei.in "Yohaku" style)
+**Date:** 2026-10-25 (rev 2 PM — visual switched to innei.in "Yohaku"; rev 3 — **framework switched Jekyll → Hexo** at user request, mid-implementation)
 **Status:** Approved by user
 **Repo:** `JasonkayZK/JasonkayZK.github.io` (branch `save`, working dir `/Users/zk/workspace/blog`)
 
 ## Goal
 
-Rebuild the blog at `jasonkayzk.github.io` from scratch as a professional, academic, English-language personal site for PhD applications. **Content structure is academic** (publications, education, experience, CV); **visual language is ported from https://innei.in/en** (the "Yohaku/余白" theme aesthetic: warm paper background, rose-gray accent, serif display type, timeline lists, dark mode). The old Hexo blog is fully backed up in `__bak/` and none of its content is migrated or used — this is a clean start.
+Rebuild the blog at `jasonkayzk.github.io` from scratch as a professional, academic, English-language personal site for PhD applications. **Content structure is academic** (publications, education, experience, CV); **visual language is ported from https://innei.in/en** (the "Yohaku/余白" aesthetic: warm paper background, rose-gray accent, serif display type, timeline lists, dark mode). The old Hexo blog is fully backed up in `__bak/` and none of its content is migrated or used — this is a clean start.
+
+**Framework history:** the site was originally implemented on Jekyll (Tasks 1–6 of the first plan, with full review cycles — 645-line stylesheet, 3 JS files, data YAMLs, placeholder images, and 2 sample posts all committed and verified). At that point the user requested a switch to **Hexo** (familiarity). All framework-neutral assets carry over; the template layer is converted Liquid → EJS; deployment changes from Pages-native build to Actions→gh-pages. Visual output must remain identical.
 
 ## Constraints & Decisions (user-confirmed)
 
-1. **Generator: Jekyll** (static, GitHub-Pages-compatible) with a fully hand-written theme. innei.in itself runs on Next.js/Mix Space — that stack cannot run on GitHub Pages, so we **port its visual language to vanilla HTML/CSS/JS** instead of using that stack. Deployed via **GitHub Pages native Jekyll build** from the `save` branch root. No GitHub Actions needed anymore.
-2. **Old content:** not migrated. `__bak/` stays in the repo as an archive, excluded from the Jekyll build via `exclude:` in `_config.yml`.
+1. **Generator: Hexo 8** with a fully hand-written theme `themes/yohaku/` (EJS templates — Hexo default engine, closest to the existing markup). Deployed via **GitHub Actions → `gh-pages` branch** (peaceiris/actions-gh-pages@v4, built-in `GITHUB_TOKEN`, no secrets needed); Pages serves from `gh-pages`. The `save` branch root is pure source.
+2. **Old content:** not migrated. `__bak/` stays in the repo untouched (Hexo ignores underscore dirs natively).
 3. **Pages:** Home (hero + academic sections), Publications, Blog (single list), Projects, CV page. Plus navbar external links to the existing Chinese site (`https://jasonkayzk.github.io/cn/`) and Japanese site (`https://jasonkayzk.github.io/jp/`).
-4. **Visual style — Yohaku port** (user-confirmed choices: hero layout, rose accent, dark mode on):
-   - Warm paper background `#faf7f0` (light) / `#1c1c1e` (dark), via CSS custom properties so every color switches with a `data-theme` attribute on `<html>`.
-   - Rose-gray accent `#c56473` (light) / `#e095a4` (dark) — innei's signature color.
-   - Neutral scale from innei's CSS: text `neutral-9`/`neutral-1..10` pairs (light: `#f9f8f5`–`#141312`, dark: `#141414`–`#f8f8f8`); we mirror these via CSS vars (`--neutral-1` … `--neutral-10`) with values light: `#f9f8f5 #f0efeb #e3e1db #cccac2 #a8a29a #78716c #57534e #3f3f3f #292524 #141312`, dark: `#141414 #242424 #2e2e2e #424242 #646264 #8b8887 #a5a3a0 #c0bebb #dedddb #f8f8f8` (last is most-contrasting; text uses `--neutral-9`-equivalent).
-   - Typography: **EB Garamond** (Google Fonts) for display/headings/signature italic accents; system sans for body text; JetBrains Mono/monospace stack for code. innei uses font vars `--app-font-serif` / `--app-font-sans`; we load EB Garamond + Inter from Google Fonts (Inter as the sans, matching innei's clean look).
-   - innei-style details: hairline borders (`paper-hairline`, 1px), dashed dividers, serif italic epigraphs, accent-glow text-shadow on the hero name, subtle radial glow behind hero, corner-mark (⌐) decorations on footer/section headers, fade-in-on-load animations (CSS only, `@keyframes` + `.loaded` trigger), rounded cards with soft hover shadow and `-translate-y` lift, pills with accent tint.
-   - Dark mode: `prefers-color-scheme` auto + manual toggle button in nav (sun/moon icon) persisted in `localStorage`, applied via `data-theme` attribute with an inline head script to avoid flash-of-wrong-theme.
-5. **Content:** all placeholder content (`Your Name`, etc.), formatted complete example entries (2–3 per type) so the user fills in real data later by editing YAML/Markdown only.
-6. Deployment switch: after the first build works locally, the user flips GitHub repo Settings → Pages → Source to `save` / `(root)`. Old Hexo workflow and `master` branch build artifacts are left untouched.
+4. **Visual style — Yohaku port** (user-confirmed: hero layout, rose accent, dark mode on):
+   - Warm paper background `#faf7f0` (light) / `#1c1c1e` (dark), CSS custom properties switching via `[data-theme]` on `<html>`.
+   - Rose-gray accent `#c56473` (light) / `#e095a4` (dark).
+   - Typography: EB Garamond (display) + Inter (body) + JetBrains Mono (code), via Google Fonts.
+   - innei-style details: hairlines, dashed dividers, serif italics, accent-glow on hero name, radial hero glow, corner-mark (⌐) decorations, fade-up entrance animations, hover-lift cards, accent-tinted pills.
+   - Dark mode: prefers-color-scheme auto + manual toggle (localStorage, `data-theme` attr, inline FOUC guard in `<head>`).
+5. **Content:** all placeholder content (`Your Name`, etc.). Content-editing surface for the user stays YAML-driven: `source/_data/*.yml` (publications/education/experience/projects) read via Hexo's native `site.data.*` (verified in Hexo 8 — no plugin needed), markdown posts in `source/_posts/`, site keys in `_config.yml`.
+6. Deployment: Actions workflow `.github/workflows/deploy.yml` on push to `save`; user flips Pages Source to `gh-pages` / `(root)` once. `master` (old Hexo build archive) may be deleted later.
 
-## Site Structure
+## Hexo migration decisions (empirically verified in a scratch Hexo 8.1.2 site)
+
+- `package.json` MUST contain `"hexo": {"version": "8.1.2"}` or the CLI silently no-ops.
+- Template engine: **EJS**. `layout.ejs` (shared shell with `<%- body %>`) replaces `default.html`; includes become `layout/partial/*.ejs` via `partial('partial/x', {locals})`.
+- **Prev/next is inverted vs Jekyll:** Jekyll `page.previous` (older) == Hexo `page.next`, and vice versa. Getting this backwards is the #1 silent breakage.
+- **Front-matter dates must be quoted** (`date: "2026-10-24 21:30:00 +08:00"`) — unquoted YAML Dates get double-shifted by machine TZ (verified 8h bug). Combined with `timezone: 'Asia/Shanghai'` in config and `TZ: Asia/Shanghai` in CI.
+- Config parity switches: `external_link.enable: false` (else Hexo rewrites external links), `meta_generator: false`, `syntax_highlighter: highlight.js` with `line_number: false`, `marked` options tuned to kramdown behavior (`modifyAnchors: 1`); heading `headerlink` anchors removed via a small `themes/yohaku/scripts/marked.js` renderer override.
+- Highlight markup differs (Hexo emits `figure.highlight > table > td.code` with long token names `.keyword/.string/.comment/...`): style.css gains ~15 lines extending the rouge-selector lists and resetting `figure.highlight` tables — visual parity, not byte parity.
+- RSS: hexo-generator-feed@4 with `path: feed.xml`; its autodiscovery injects the alternate link where `{% feed_meta %}` was.
+- 404: `source/404.md` with `permalink: /404.html` (Pages needs the exact file).
+- URLs preserved: `permalink: blog/:year/:month/:day/:title/`, assets served from `/assets/css|js/*` via `themes/yohaku/source/`.
+- Dates in templates via `date()` helper with moment formats (`'MMM D, YYYY'`); `date_xml` emits UTC — use `date(page.date,'YYYY-MM-DDTHH:mm:ssZ')` for datetime attributes.
+
+## Site Structure (Hexo)
 
 ```
 .
-├── _config.yml               # site config: title, author, url, exclude __bak, kramdown, defaults
-├── _data/
-│   ├── education.yml         # institution, degree, dates, logo path
-│   ├── experience.yml        # company, role, dates, logo path
-│   ├── publications.yml      # title, authors (list), venue, year, award, tags, links, abstract
-│   └── projects.yml          # name, description, tech tags, links (repo/demo)
-├── _layouts/
-│   ├── default.html          # <head> (SEO meta, fonts, css, theme init script), nav, content block, footer
-│   ├── home.html             # hero (avatar, greeting, tagline, stats, socials) + research interests + recent writing timeline + education/experience
-│   ├── page.html             # generic content page (CV, etc.)
-│   ├── blog-list.html        # tag filter + timeline-style post list
-│   └── post.html             # post header (title/date/category badge/reading time), content, prev/next nav, back link
-├── _includes/
-│   ├── nav.html              # top nav: Home Publications Blog Projects CV + cn/jp external + theme toggle button
-│   ├── footer.html           # © year name · Built with Jekyll & hosted on GitHub Pages · corner-mark decorations
-│   ├── social-links.html     # icon links (SVG): GitHub, Google Scholar, Email, RSS
-│   ├── experience-list.html  # renders rows from _data (logo + title + subtitle + dates)
-│   ├── pub-card.html         # one publication card: title link, authors (owner bold), venue, award badge, links, abstract toggle
-│   └── post-card.html        # one blog post row (timeline style)
-├── _posts/                   # YYYY-MM-DD-title.md; front matter: title, date, tags, excerpt
-├── assets/
-│   ├── css/style.scss        # full site stylesheet (Yohaku port: paper vars, serif, hairlines, timeline, cards, dark mode) + syntax highlight
-│   └── js/
-│       ├── theme.js          # dark-mode toggle: localStorage + prefers-color-scheme + button icon swap
-│       ├── blog-filter.js    # tag filtering for blog list
-│       └── publications.js   # abstract expand/collapse + topic filtering + hide empty year sections
-├── index.md                  # home page content: research interests placeholder text (hero is generated by layout)
-├── publications.md           # publications page (renders _data/publications.yml grouped by year desc, Preprints first)
-├── blog.md                   # blog list page
-├── projects.md               # projects page (renders _data/projects.yml)
-├── cv.md                     # CV page (education + experience + skills placeholder sections, CV.pdf link placeholder)
-├── img/
-│   ├── photo.svg             # placeholder avatar: "JK" monogram on paper tone
-│   └── logos/                # placeholder logo blocks (initials), replaced later by user
-├── 404.html                  # styled 404 page
-├── Gemfile                   # gem "github-pages", jekyll-feed
-└── README.md                 # how to run locally, where to edit content, deployment switch steps
+├── _config.yml               # site keys (title/author/email/affiliation/hero_*/site_since/avatar/socials)
+│                             # + hexo: url, permalink, timezone, theme: yohaku, highlight/marked/feed config,
+│                             #   external_link/meta_generator off
+├── package.json              # hexo 8.1.2 (+ "hexo".version field), renderers (ejs, marked), generator-feed, hexo-server
+├── scaffolds/post.md         # new-post scaffold with quoted-date + excerpt conventions
+├── themes/yohaku/
+│   ├── _config.yml           # comment-only placeholder
+│   ├── layout/
+│   │   ├── layout.ejs        # shell: head (SEO, fonts, css, FOUC guard, feed autodiscovery), nav, body, footer, theme.js
+│   │   ├── home.ejs          # hero + research interests content + recent writing + education/experience
+│   │   ├── blog.ejs          # tag pills + timeline list
+│   │   ├── post.ejs          # post header/content/prev-next (directions swapped vs Jekyll!)
+│   │   ├── page.ejs          # generic content page
+│   │   ├── publications.ejs  # topic pills + Manuscript/year groups + pub-card partials
+│   │   ├── projects.ejs      # project cards from site.data.projects
+│   │   ├── cv.ejs            # education/experience/skills/awards + CV.pdf link
+│   │   └── partial/
+│   │       ├── nav.ejs           # 5 links + cn/jp external + theme toggle
+│   │       ├── footer.ejs        # © year · Jekyll→Hexo credit · corner marks
+│   │       ├── social-links.ejs  # conditional social icons
+│   │       ├── experience-list.ejs
+│   │       └── pub-card.ejs      # one publication card (param: pub)
+│   ├── scripts/marked.js     # heading renderer override (no headerlink anchors)
+│   └── source/assets/
+│       ├── css/style.css     # ported stylesheet (front matter stripped) + highlight-class extensions
+│       └── js/{theme.js, blog-filter.js, publications.js}
+├── source/
+│   ├── _data/{education,experience,publications,projects}.yml   # user's editing surface
+│   ├── _posts/*.md           # quoted dates; tags/categories/excerpt front matter
+│   ├── img/photo.svg, img/logos/*.svg
+│   ├── index.md              # layout: home (overrides index generator)
+│   ├── blog/index.md         # layout: blog
+│   ├── publications/index.md # layout: publications
+│   ├── projects/index.md     # layout: projects
+│   ├── cv/index.md           # layout: cv
+│   └── 404.md                # permalink: /404.html
+├── .github/workflows/deploy.yml   # push to save → npm ci → hexo generate → gh-pages (peaceiris v4, GITHUB_TOKEN)
+├── README.md                 # hexo commands, content editing guide, date-quoting rule, deploy docs
+└── docs/                     # specs + plans (unchanged)
 ```
 
 ## Page Specs
 
 ### Home
-- **Hero** (centered, full-viewport-ish): round avatar (shadow ring), `Hi, I'm Your Name 👋` with the name in accent color + glow, subtitle (`aspiring Ph.D. researcher…`), research keyword chips (`LLM · Systems · RL`), stats row (`N posts · N words · since 2019` — computed by Liquid from `site.posts`), social icon row.
-- Below hero: **Research Interests** (from `index.md`), **Recent Writing** — innei's numbered timeline list (01/02/03 on a vertical hairline, accent-numbered first item, category label + title + date), latest 5 posts; **Education** and **Experience** as `experience-list` rows (hairline cards with logo, title, subtitle, dates, corner-mark decorations).
-- Content text lives in `index.md` so text edits need no HTML.
+- **Hero** (centered): avatar, `Hi, I'm Your Name 👋` (name in accent + glow, wave aria-hidden), tagline, keyword chips, stats row (posts / k-words / years, computed at template time), social icons.
+- Below: **Research Interests** (from `source/index.md` body), **Recent Writing** timeline (01/02/… on a vertical hairline, latest 5), **Education** / **Experience** rows from `site.data.*` via `experience-list` partial.
 
 ### Publications
-- Top: `All` + topic filter pills (accent-tinted when active) auto-derived from unique tags.
-- Groups in order: **Manuscript** (entries with `venue: "Preprint"`), then year desc.
-- Card (paper card, hairline border, hover lift): clickable title (links to PDF), authors with owner name bolded, italic serif venue, rose award badge when present, outline link buttons, `Abstract ▾` toggle expanding a bordered abstract block, small topic tags.
-- Data-driven from `_data/publications.yml`; adding a paper = appending YAML.
+- Topic filter pills (from unique tags across `site.data.publications`) + **Manuscript** section (venue === "Preprint") + year-descending sections. pub-card: linked title, bolded owner-author, italic venue, award badge, outline links, abstract toggle, tag chips. All data output escaped.
 
 ### Blog
-- Single list, innei timeline style: vertical hairline, `01`-style leading number (tabular numerals, accent for newest), category label + serif title + date, reading time; tag filter pills above.
-- Post page: serif title, date, category badge, reading time; content; footer with ← Back to Blog and prev/next post links.
-- 2 placeholder posts demonstrating the format.
+- Tag filter pills + timeline list (indices, date, first category, reading time at 200wpm, serif title, large on first). Post page: label/title/date/badge/reading-time header, content, ← Back to Blog, prev/next (Hexo direction semantics).
 
 ### Projects
-- Paper cards with hairline border + hover shadow/lift: project name (serif), one-paragraph description, tech tag pills, repo/demo outline links. 3 placeholder entries.
+- Cards from `site.data.projects`: serif name (linked when repo), description, tag chips, GitHub/Demo outline links.
 
 ### CV
-- Single page rendering education + experience data plus placeholder Skills/Awards sections and a `[Download CV (PDF)]` outline button (dead link placeholder).
+- Education + Experience via shared partial, placeholder Skills/Awards sections, `[Download CV (PDF)]` outline link.
 
 ### Navigation & Footer
-- Nav (top, hairline bottom border, paper background): `Home  Publications  Blog  Projects  CV` — plus `中文站` / `日文站` external links (subtle separator), and a dark-mode toggle button (sun/moon SVG).
-- Footer: `© 2026 Your Name · Built with Jekyll & hosted on GitHub Pages` with innei-style corner-mark (⌐) decorations.
+- Nav: Home / Publications / Blog / Projects / CV + 中文站/日文站 external links (left hairline separator) + dark-mode toggle. Footer: `© YYYY Your Name · Built with Hexo & hosted on GitHub Pages` + corner marks.
 
 ## Interaction/JS
 
-Three small vanilla-JS files, no frameworks:
-- `theme.js` (~30 lines): reads localStorage `theme` → sets `data-theme` on `<html>`, falls back to `prefers-color-scheme`; toggle button flips and persists. Inline 2-line variant in `<head>` to prevent FOUC.
-- `publications.js`: abstract toggle (aria-expanded), topic filter, hides year sections with no visible cards.
-- `blog-filter.js`: tag filter on post rows.
-
-CSS-only animations: fade/translate-in on load for hero elements; no scroll-triggered JS.
+Three vanilla ES5 files (ported verbatim from the Jekyll build, all review fixes included: aria-pressed pills, `Array.prototype.some` visibility check, Safari mq fallback):
+- `theme.js` — dark toggle, localStorage, prefers-color-scheme auto-follow.
+- `publications.js` — abstract toggle (aria-expanded), topic filter, hide empty year sections.
+- `blog-filter.js` — tag filter.
 
 ## Error/Edge Handling
 
-- Empty `_data` collections or omitted fields render gracefully (`if` guards in includes; no broken rows).
-- `exclude: [__bak, docs, .github, ...]` so the 500+ old posts and specs never render.
-- 404 page in site style.
-- Reading time falls back to "1 min read"; stats row hides word-count segment when there are no posts.
-- Theme init script wrapped so it works even if localStorage is unavailable (private mode).
+- Data files absent/empty → sections hidden via truthiness guards.
+- Reading time `Math.max(1, floor(words/200))`; stats words floor to k.
+- 404 in site style at `/404.html`.
+- Date pipeline: quoted FM dates + `timezone: Asia/Shanghai` + `TZ` in CI — QA grep `datetime="2026-10-24T21:30:00+08:00"`.
 
 ## Testing/Verification
 
-1. `bundle exec jekyll build` succeeds with zero warnings about excluded dirs.
-2. `bundle exec jekyll serve` — verify each page renders: home hero/stats/timeline, publications filtering + abstract toggle, blog tag filter + post nav, projects, CV, 404, RSS feed output.
-3. Cross-check rendered pages against innei.in for visual fidelity (paper tone `#faf7f0`, accent `#c56473`, serif display, hairlines, timeline, dark mode toggle working with persistence).
-4. Responsive check at mobile width (nav collapses to a dropdown; layout adapts).
+Per-task greps plus a final parity pass: build with `TZ=Asia/Shanghai npx hexo generate`, compare with the preserved Jekyll `_site/` output (nav active states, hero stats, card counts, data-tags attribute sets, dark toggle script presence, absence of generator meta). Interactive: paper bg, accent #c56473, dark toggle persists, filters work, hamburger nav at mobile width.
 
 ## Out of Scope (YAGNI)
 
-Migrating old posts; same-site i18n; search; comments; analytics; per-post language switcher; background music/effects toggles; CNAME/custom domain; touching the old cn/jp sites or the `master` branch; server features (view counts, dynamic stats) — home stats are computed at build time.
+Migrating old posts; same-site i18n; search; comments; analytics; custom domain; touching `__bak/`, old cn/jp sites, or `master`; dynamic stats.
