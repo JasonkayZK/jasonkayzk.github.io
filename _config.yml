@@ -3,10 +3,10 @@ title: Jasonkay's blog
 author: Jasonkay
 email: jasonkayzk@gmail.com
 description: >-
-  Personal website of Jasonkay — software engineer and aspiring researcher.
-affiliation: "Aspiring Ph.D. Student"
-hero_tagline: "I turn curiosity into systems"
-hero_keywords: [LLM, Systems, RL]
+  Personal website of Jasonkay — Lecturer, software engineer and aspiring researcher.
+affiliation: "Independent researcher, Aspiring Ph.D. Student"
+hero_tagline: "> I turn curiosity into systems rooted in confidence, authenticity, reasonableness, and specificity."
+hero_keywords: [Distributed System, AI Infra, HPC, English・日本語]
 site_since: 2026
 avatar: "/img/photo.png"
 
@@ -38,8 +38,8 @@ external_link:
 # Highlight
 syntax_highlighter: highlight.js
 highlight:
-  line_number: false
-  auto_detect: false
+  line_number: true
+  auto_detect: true
   wrap: true
   hljs: false
 
