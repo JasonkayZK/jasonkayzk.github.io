@@ -568,9 +568,11 @@ strong { font-weight: 600; }
 }
 .post-reading-time { font-variant-numeric: tabular-nums; }
 
-.post-content { font-size: 1rem; line-height: 1.85; color: var(--ink); }
-.post-content h2 { margin-top: 2.5rem; }
-.post-content h3 { margin-top: 2rem; }
+.post-content { font-size: 1rem; line-height: 1.75; color: var(--ink); }
+.post-content p { margin-bottom: 1.1em; }
+.post-content ul, .post-content ol { margin-bottom: 1.1em; }
+.post-content h2 { margin-top: 2.5rem; margin-bottom: 1rem; }
+.post-content h3 { margin-top: 1.9rem; margin-bottom: 0.8rem; font-weight: 600; }
 .post-content img { border-radius: 8px; margin: 1.5em 0; }
 .post-content a { text-decoration: underline; text-decoration-color: var(--accent-soft); text-underline-offset: 3px; }
 .post-content a:hover { text-decoration-color: var(--accent); }
